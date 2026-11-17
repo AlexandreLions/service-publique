@@ -9,53 +9,58 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --ink:#1c1c1a; --mute:#8d8c87; --seam:#e1e1dd; --pin:#d4432c;
-  --W:clamp(140px, 38vw, 200px);
-}
+:root{ --ink:#1c1c1a; --mute:#8d8c87; --seam:#e1e1dd; --pin:#d4432c; }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{min-height:100%}
-body{font-family:Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;
-  background-color:var(--seam);
-  background-image:
-    linear-gradient(90deg, var(--seam) 0 2px, transparent 2px 158px, var(--seam) 158px),
-    linear-gradient(0deg, var(--seam) 0 2px, transparent 2px 158px, var(--seam) 158px),
-    radial-gradient(circle at 50% 50%, #fff 0, #fefefd 36%, #f1f1ee 76%, #e9e9e5 100%);
-  background-size:160px 160px;background-attachment:fixed;background-position:center top}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 95% 85% at 50% 40%, transparent 55%, rgba(70,70,62,.10) 100%)}
+html,body{height:100%;overflow:hidden}
+body{font-family:Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;background:#efefec}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .textbtn{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);padding:10px 6px;transition:color .2s}
 .textbtn:hover,.textbtn:focus-visible{color:var(--ink);outline:none}
 .textbtn.danger:hover{color:#b23b2e}
 [hidden]{display:none !important}
 
-/* barre du haut */
-.bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:flex-end;align-items:center;gap:18px;
-  padding:14px clamp(16px,4vw,32px);
-  background:linear-gradient(rgba(240,240,237,.85), rgba(240,240,237,0));backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
-.count{margin-right:auto;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-variant-numeric:tabular-nums}
+/* le mur : une grande surface qu'on parcourt */
+.view{position:fixed;inset:0;overflow:auto;scrollbar-width:none;cursor:grab;overscroll-behavior:contain}
+.view::-webkit-scrollbar{display:none}
+.view.drag{cursor:grabbing}
+.canvas{position:relative;
+  background-color:var(--seam);
+  background-image:
+    linear-gradient(90deg, var(--seam) 0 2px, transparent 2px 158px, var(--seam) 158px),
+    linear-gradient(0deg, var(--seam) 0 2px, transparent 2px 158px, var(--seam) 158px),
+    radial-gradient(circle at 50% 50%, #fff 0, #fefefd 36%, #f1f1ee 76%, #e9e9e5 100%);
+  background-size:160px 160px}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse 95% 85% at 50% 45%, transparent 55%, rgba(70,70,62,.11) 100%)}
 
-/* le mur */
-.wall{position:relative;z-index:1;display:grid;grid-template-columns:repeat(auto-fill, minmax(var(--W), 1fr));
-  gap:clamp(36px,5vw,60px) clamp(22px,4vw,48px);justify-items:center;
-  padding:96px clamp(18px,6vw,96px) 120px;max-width:1500px;margin:0 auto}
-.paper{position:relative;width:var(--W);aspect-ratio:3/4;background:#fff;cursor:zoom-in;
+/* un papier punaisé */
+.cell{position:absolute;width:var(--w);height:calc(var(--w) * 4 / 3);
+  transform:translate(var(--x),var(--y)) rotate(var(--r));transform-origin:50% 7px;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.cell:not(.torn):hover{transform:translate(var(--x),calc(var(--y) - 3px)) rotate(calc(var(--r) * .4))}
+.sheet{position:absolute;inset:0;background:#fff;cursor:zoom-in;transform-origin:50% 7px;
   display:flex;align-items:center;justify-content:center;padding:30px 20px 22px;
-  transform:translate(var(--x),var(--y)) rotate(var(--r));transform-origin:50% 6px;
-  box-shadow:0 1px 1px rgba(0,0,0,.05), 0 16px 26px -14px rgba(0,0,0,.30), 0 0 0 1px rgba(0,0,0,.03);
-  transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s}
-.paper:hover{transform:translate(var(--x),calc(var(--y) - 3px)) rotate(calc(var(--r) * .4));
-  box-shadow:0 1px 1px rgba(0,0,0,.05), 0 24px 34px -16px rgba(0,0,0,.34), 0 0 0 1px rgba(0,0,0,.03)}
-.paper p{font:400 19px/1.3 'Instrument Serif',serif;text-align:center;white-space:pre-wrap;overflow-wrap:anywhere;
-  max-height:100%;overflow:hidden}
-.paper.sm p{font-size:16px}
-.paper.xs p{font-size:13.5px}
-.pin{position:absolute;top:-8px;left:50%;width:17px;height:17px;margin-left:-8.5px;border-radius:50%;pointer-events:none;
+  box-shadow:0 1px 1px rgba(0,0,0,.05), 0 16px 26px -14px rgba(0,0,0,.30), 0 0 0 1px rgba(0,0,0,.03)}
+.sheet p{font:400 19px/1.3 'Instrument Serif',serif;text-align:center;white-space:pre-wrap;overflow-wrap:anywhere;max-height:100%;overflow:hidden;pointer-events:none}
+.sm .sheet p{font-size:16px}
+.xs .sheet p{font-size:13.5px}
+.cell.torn{filter:drop-shadow(0 4px 3px rgba(0,0,0,.16))}
+.cell.torn > .sheet{cursor:default;box-shadow:none;background:#fbfbf9}
+.cell.torn > .sheet p{display:none}
+.piece{position:absolute;inset:0;filter:drop-shadow(0 12px 10px rgba(0,0,0,.22));pointer-events:none}
+.piece .sheet{box-shadow:none}
+.pin{position:absolute;top:-8px;left:50%;width:17px;height:17px;margin-left:-8.5px;border-radius:50%;pointer-events:none;z-index:2;
   background:radial-gradient(circle at 34% 30%, #ffb3a3 0, #ef6a50 22%, var(--pin) 48%, #7e1d10 100%);
   box-shadow:0 2px 2px rgba(0,0,0,.25), 3px 7px 8px rgba(0,0,0,.18)}
-.pin::after{content:"";position:absolute;left:4px;top:3px;width:5px;height:3px;border-radius:50%;background:rgba(255,255,255,.75);filter:blur(.4px)}
-.empty{position:fixed;inset:0;display:grid;place-items:center;z-index:1;pointer-events:none;
+.pin::after{content:"";position:absolute;left:4px;top:3px;width:5px;height:3px;border-radius:50%;background:rgba(255,255,255,.75)}
+
+/* barre du haut */
+.bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:flex-end;align-items:center;gap:18px;
+  padding:14px clamp(16px,4vw,32px);pointer-events:none;
+  background:linear-gradient(rgba(240,240,237,.85), rgba(240,240,237,0))}
+.bar > *{pointer-events:auto}
+.count{margin-right:auto;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-variant-numeric:tabular-nums}
+.empty{position:fixed;inset:0;display:grid;place-items:center;z-index:3;pointer-events:none;
   font:italic 400 24px 'Instrument Serif',serif;color:var(--mute)}
 
 /* lecture d'un papier */
@@ -72,7 +77,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .big p{font:400 28px/1.3 'Instrument Serif',serif;text-align:center;white-space:pre-wrap;overflow-wrap:anywhere;max-height:100%;overflow:auto;user-select:text}
 .big.sm p{font-size:23px}
 .big.xs p{font-size:19px}
-.fbar{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;align-items:center;gap:20px;
+.fbar{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;
   opacity:0;transition:opacity .35s}
 .focus.on .fbar{opacity:1}
 .fcount{font-size:11px;letter-spacing:.14em;color:var(--mute);min-width:52px;text-align:center;font-variant-numeric:tabular-nums}
@@ -80,7 +85,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* connexion */
 .login{position:fixed;inset:0;z-index:30;display:grid;place-items:center;
   background:rgba(246,246,243,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.login form{display:flex;flex-direction:column;align-items:center;gap:14px}
 .login input{width:220px;border:0;border-bottom:1px solid #c9c8c3;background:transparent;outline:0;padding:10px 4px;
   font:15px Inter,system-ui,sans-serif;letter-spacing:.12em;text-align:center;color:var(--ink)}
 .login input::placeholder{color:#b9b8b3;letter-spacing:.2em;text-transform:uppercase;font-size:11px}
@@ -88,18 +92,19 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .caption{position:fixed;left:0;right:0;bottom:28px;text-align:center;z-index:40;pointer-events:none;
   font:italic 400 18px 'Instrument Serif',serif;color:#6f6e69;opacity:0;transition:opacity .4s}
 .caption.on{opacity:1}
-@media (prefers-reduced-motion:reduce){ .paper,.big,.veil{transition:none} }
+@media (prefers-reduced-motion:reduce){ .cell,.big,.veil{transition:none} }
 </style>
 </head>
 <body>
 
+<div class="view" id="view"><div class="canvas" id="canvas"></div></div>
+<div class="vignette"></div>
+
 <div class="bar" id="bar" hidden>
   <span class="count" id="count"></span>
-  <button class="textbtn danger" id="clearBtn">Tout décrocher</button>
+  <button class="textbtn danger" id="clearBtn">Tout nettoyer</button>
   <button class="textbtn" id="outBtn">Quitter</button>
 </div>
-
-<main class="wall" id="wall"></main>
 <div class="empty" id="empty" hidden>Le mur est vide.</div>
 
 <div class="focus" id="focus">
@@ -123,198 +128,348 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="caption" id="caption"></div>
 
 <script>
-(() => {
-  const SUPABASE_URL = 'https://zurkvkbilehemrynvwwb.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1cmt2a2JpbGVoZW1yeW52d3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5MTEzNzEsImV4cCI6MjExMDQ4NzM3MX0.DWvG8jqvvPJTfTcwKpIS1g0BenqECiK9A9UoKHwylVM';
-  const $ = id => document.getElementById(id);
-  const wall = $('wall'), bar = $('bar'), login = $('login'), codeIn = $('codeIn');
-  const focus = $('focus'), big = $('big'), bigText = $('bigText');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+(function () {
+  var SUPABASE_URL = 'https://zurkvkbilehemrynvwwb.supabase.co';
+  var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1cmt2a2JpbGVoZW1yeW52d3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5MTEzNzEsImV4cCI6MjExMDQ4NzM3MX0.DWvG8jqvvPJTfTcwKpIS1g0BenqECiK9A9UoKHwylVM';
+  function $(id) { return document.getElementById(id); }
+  var view = $('view'), canvas = $('canvas'), bar = $('bar'), login = $('login'), codeIn = $('codeIn');
+  var focus = $('focus'), big = $('big'), bigText = $('bigText');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const store = {
-    get(){ try { return localStorage.getItem('sp-admin') || ''; } catch (e) { return ''; } },
-    set(v){ try { v ? localStorage.setItem('sp-admin', v) : localStorage.removeItem('sp-admin'); } catch (e) {} }
+  var store = {
+    get: function () { try { return localStorage.getItem('sp-admin') || ''; } catch (e) { return ''; } },
+    set: function (v) { try { if (v) localStorage.setItem('sp-admin', v); else localStorage.removeItem('sp-admin'); } catch (e) {} }
   };
-  let code = store.get();
-  let papers = [];            // [{id, text}]
-  const els = new Map();      // id -> élément
-  let current = -1, pollT = null, busy = false;
+  var code = store.get();
+  var items = [];            // [{id, text, torn}] dans l'ordre d'arrivée
+  var cells = new Map();     // id -> élément
+  var current = -1, pollT = null, busy = false, firstLayout = true;
 
-  async function rpc(fn, body){
-    const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 12000);
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
-        method: 'POST', signal: ctrl.signal,
-        headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
+  function rpc(fn, body) {
+    var ctrl = new AbortController(), t = setTimeout(function () { ctrl.abort(); }, 12000);
+    return fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+      method: 'POST', signal: ctrl.signal,
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      clearTimeout(t);
       if (!res.ok) throw new Error('http ' + res.status);
-      return await res.json();
-    } finally { clearTimeout(t); }
+      return res.json();
+    }, function (e) { clearTimeout(t); throw e; });
   }
 
-  let capT;
-  function say(t, ms = 2600){
+  var capT;
+  function say(t, ms) {
     clearTimeout(capT);
     $('caption').textContent = t;
     $('caption').classList.add('on');
-    capT = setTimeout(() => $('caption').classList.remove('on'), ms);
+    capT = setTimeout(function () { $('caption').classList.remove('on'); }, ms || 2600);
   }
 
-  // position stable de chaque papier (dérivée de son id)
-  function seed(id){ let h = 2166136261; for (const c of id) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; }
-  const sizeClass = t => t.length > 220 ? 'xs' : t.length > 110 ? 'sm' : '';
+  /* ---------- hasard stable (dérivé de l'id) ---------- */
+  function seeded(id) {
+    var h = 2166136261;
+    for (var i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return function () {
+      h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909);
+      return ((h >>>= 0) % 100000) / 100000;
+    };
+  }
+  function sizeClass(t) { return t.length > 220 ? 'xs' : t.length > 110 ? 'sm' : ''; }
 
-  function makePaper(p){
-    const r = seed(p.id);
-    const el = document.createElement('div');
-    el.className = 'paper ' + sizeClass(p.text);
+  // ligne de déchirure (en %), toujours la même pour un papier donné
+  function tearLine(id) {
+    var r = seeded(id + 'tear'), base = 15 + r() * 6, pts = [], n = 14;
+    for (var i = 0; i <= n; i++) {
+      var y = base + (r() * 5 - 2.5) + (i % 2 ? 1.6 : -1.6);
+      pts.push([(i / n * 100).toFixed(1), y.toFixed(1)]);
+    }
+    return pts;
+  }
+  function topPoly(pts) {
+    var s = 'polygon(0% 0%, 100% 0%';
+    for (var i = pts.length - 1; i >= 0; i--) s += ', ' + pts[i][0] + '% ' + pts[i][1] + '%';
+    return s + ')';
+  }
+  function bottomPoly(pts) {
+    var s = 'polygon(';
+    for (var i = 0; i < pts.length; i++) s += (i ? ', ' : '') + pts[i][0] + '% ' + pts[i][1] + '%';
+    return s + ', 100% 100%, 0% 100%)';
+  }
+
+  /* ---------- la spirale : chaque papier garde sa place, le mur grandit autour ---------- */
+  var spiral = [[0, 0]];
+  function spot(i) {
+    while (spiral.length <= i) {
+      // marche en spirale carrée : droite, bas, gauche, haut, avec des pas 1,1,2,2,3,3...
+      var len = spiral.length, x = 0, y = 0, dir = 0, step = 1, done = 1;
+      spiral = [[0, 0]];
+      var dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+      while (spiral.length < Math.max(len * 2, 64)) {
+        for (var rep = 0; rep < 2; rep++) {
+          for (var k = 0; k < step; k++) { x += dirs[dir][0]; y += dirs[dir][1]; spiral.push([x, y]); }
+          dir = (dir + 1) % 4;
+        }
+        step++;
+      }
+    }
+    return spiral[i];
+  }
+
+  function dims() {
+    var w = innerWidth < 600 ? 150 : 190;
+    return { w: w, h: Math.round(w * 4 / 3), gx: innerWidth < 600 ? 44 : 70, gy: innerWidth < 600 ? 56 : 84, pad: innerWidth < 600 ? 90 : 160 };
+  }
+
+  var geo = null; // dernière géométrie, pour garder la vue stable
+  function layout() {
+    var d = dims(), cw = d.w + d.gx, ch = d.h + d.gy;
+    var minX = 0, maxX = 0, minY = 0, maxY = 0;
+    for (var i = 0; i < items.length; i++) {
+      var p = spot(i);
+      if (p[0] < minX) minX = p[0]; if (p[0] > maxX) maxX = p[0];
+      if (p[1] < minY) minY = p[1]; if (p[1] > maxY) maxY = p[1];
+    }
+    var contentW = (maxX - minX + 1) * cw, contentH = (maxY - minY + 1) * ch;
+    var W = Math.max(contentW + d.pad * 2, innerWidth), H = Math.max(contentH + d.pad * 2, innerHeight);
+    var offX = (W - contentW) / 2, offY = (H - contentH) / 2;
+    // position du papier n°0 (centre de la spirale)
+    var ox = offX + (0 - minX) * cw, oy = offY + (0 - minY) * ch;
+
+    var prev = geo;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    canvas.style.backgroundPosition = Math.round(ox % 160) + 'px ' + Math.round(oy % 160) + 'px';
+
+    items.forEach(function (it, i) {
+      var el = cells.get(it.id), p = spot(i);
+      el.style.setProperty('--w', d.w + 'px');
+      el.style.left = (ox + p[0] * cw + d.gx / 2) + 'px';
+      el.style.top = (oy + p[1] * ch + d.gy / 2) + 'px';
+    });
+
+    if (firstLayout) {
+      view.scrollLeft = (W - innerWidth) / 2;
+      view.scrollTop = (H - innerHeight) / 2;
+      firstLayout = false;
+    } else if (prev) {
+      // le centre de la spirale a bougé sur la toile : on décale la vue d'autant
+      view.scrollLeft += ox - prev.ox;
+      view.scrollTop += oy - prev.oy;
+    }
+    geo = { ox: ox, oy: oy };
+  }
+
+  function makeCell(it) {
+    var r = seeded(it.id);
+    var el = document.createElement('div');
+    el.className = 'cell ' + (it.torn ? 'torn' : sizeClass(it.text || ''));
     el.style.setProperty('--r', (r() * 7 - 3.5).toFixed(2) + 'deg');
     el.style.setProperty('--x', (r() * 16 - 8).toFixed(1) + 'px');
     el.style.setProperty('--y', (r() * 14 - 7).toFixed(1) + 'px');
-    const pin = document.createElement('span'); pin.className = 'pin';
-    const t = document.createElement('p'); t.textContent = p.text;
-    el.append(pin, t);
-    el.tabIndex = 0;
-    el.addEventListener('click', () => open(papers.findIndex(x => x.id === p.id)));
-    el.addEventListener('keydown', e => { if (e.key === 'Enter') open(papers.findIndex(x => x.id === p.id)); });
+    var sheet = document.createElement('div'); sheet.className = 'sheet';
+    var t = document.createElement('p'); t.textContent = it.text || '';
+    sheet.appendChild(t);
+    var pin = document.createElement('span'); pin.className = 'pin';
+    el.appendChild(sheet); el.appendChild(pin);
+    if (it.torn) tearInPlace(el, it.id);
+    sheet.addEventListener('click', function () {
+      if (dragged || el.classList.contains('torn')) return;
+      open(readable().findIndex(function (x) { return x.id === it.id; }));
+    });
     return el;
   }
-
-  function render(list, animateNew){
-    const ids = new Set(list.map(p => p.id));
-    for (const [id, el] of els) if (!ids.has(id)) { el.remove(); els.delete(id); }
-    let i = 0;
-    list.forEach((p, k) => {
-      let el = els.get(p.id);
-      if (!el) {
-        el = makePaper(p); els.set(p.id, el);
-        if (animateNew && !reduce) el.animate([{ opacity: 0, translate: '0 -14px' }, { opacity: 1, translate: '0 0' }],
-          { duration: 520, delay: Math.min(i++ * 45, 900), easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
-      }
-      if (wall.children[k] !== el) wall.insertBefore(el, wall.children[k] || null);
-    });
-    papers = list;
-    const n = list.length;
-    $('count').textContent = n === 0 ? '' : n === 1 ? '1 idée' : n + ' idées';
-    $('empty').hidden = n !== 0;
-    $('clearBtn').hidden = n === 0;
+  function tearInPlace(el, id) {
+    var sheet = el.querySelector('.sheet');
+    el.classList.add('torn');
+    el.classList.remove('sm', 'xs');
+    sheet.style.clipPath = topPoly(tearLine(id));
+    sheet.style.transform = 'rotate(' + ((seeded(id + 'hang')() * 10 - 5).toFixed(1)) + 'deg)';
+    var p = sheet.querySelector('p'); if (p) p.textContent = '';
   }
 
-  async function load(first){
-    try {
-      const data = await rpc('admin_ideas', { code });
+  function readable() { return items.filter(function (x) { return !x.torn; }); }
+
+  function render(list, animateNew) {
+    var ids = new Set(list.map(function (x) { return x.id; }));
+    cells.forEach(function (el, id) { if (!ids.has(id)) { el.remove(); cells.delete(id); } });
+    var fresh = 0;
+    list.forEach(function (it) {
+      var el = cells.get(it.id);
+      if (!el) {
+        el = makeCell(it); cells.set(it.id, el); canvas.appendChild(el);
+        if (animateNew && !reduce) el.animate([{ opacity: 0, translate: '0 -14px' }, { opacity: 1, translate: '0 0' }],
+          { duration: 520, delay: Math.min(fresh++ * 45, 900), easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+      } else if (it.torn && !el.classList.contains('torn')) {
+        tearInPlace(el, it.id);
+      }
+    });
+    items = list;
+    layout();
+    var n = readable().length;
+    $('count').textContent = n === 0 ? '' : n === 1 ? '1 idée' : n + ' idées';
+    $('empty').hidden = items.length !== 0;
+    $('clearBtn').hidden = items.length === 0;
+  }
+
+  function load(first) {
+    return rpc('admin_ideas', { code: code }).then(function (data) {
       if (data === null) { logout(true); return false; }
       render(Array.isArray(data) ? data : [], true);
       return true;
-    } catch (e) {
+    }, function () {
       if (first) say('Impossible de charger le mur pour l’instant.', 4000);
       return false;
-    }
+    });
   }
-
-  function startPolling(){
+  function startPolling() {
     clearInterval(pollT);
-    pollT = setInterval(() => { if (!document.hidden && !focus.classList.contains('on')) load(false); }, 20000);
+    pollT = setInterval(function () { if (!document.hidden && !focus.classList.contains('on') && !busy) load(false); }, 20000);
   }
-
-  async function enter(c){
+  function enter(c) {
     code = c;
-    const ok = await load(true);
-    if (ok) { store.set(c); login.hidden = true; bar.hidden = false; startPolling(); }
-    return ok;
+    return load(true).then(function (ok) {
+      if (ok) { store.set(c); login.hidden = true; bar.hidden = false; startPolling(); }
+      return ok;
+    });
   }
-
-  function logout(wrong){
+  function logout(wrong) {
     clearInterval(pollT);
     code = ''; store.set('');
-    els.forEach(el => el.remove()); els.clear(); papers = [];
+    cells.forEach(function (el) { el.remove(); }); cells.clear(); items = [];
+    firstLayout = true; geo = null;
     bar.hidden = true; $('empty').hidden = true; close();
     login.hidden = false; codeIn.value = '';
-    setTimeout(() => codeIn.focus(), 50);
+    setTimeout(function () { codeIn.focus(); }, 50);
     if (wrong) shake();
   }
-  function shake(){
+  function shake() {
     if (reduce) return;
-    codeIn.animate([0, -6, 6, -4, 4, 0].map(x => ({ transform: `translateX(${x}px)` })), { duration: 380 });
+    codeIn.animate([0, -6, 6, -4, 4, 0].map(function (x) { return { transform: 'translateX(' + x + 'px)' }; }), { duration: 380 });
   }
-
-  $('loginForm').addEventListener('submit', async e => {
+  $('loginForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    const c = codeIn.value.trim();
+    var c = codeIn.value.trim();
     if (!c || busy) return;
     busy = true;
-    const ok = await enter(c);
-    busy = false;
-    if (!ok && !login.hidden) { shake(); codeIn.select(); }
+    enter(c).then(function (ok) { busy = false; if (!ok && !login.hidden) { shake(); codeIn.select(); } });
   });
 
-  // lecture
-  function show(){
-    const p = papers[current]; if (!p) return close();
-    big.className = 'big ' + sizeClass(p.text);
-    bigText.textContent = p.text;
-    $('fcount').textContent = `${current + 1} / ${papers.length}`;
+  /* ---------- se promener sur le mur (glisser à la souris) ---------- */
+  var dragging = false, dragged = false, sx = 0, sy = 0, sl = 0, st = 0;
+  view.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    dragging = true; dragged = false; sx = e.clientX; sy = e.clientY; sl = view.scrollLeft; st = view.scrollTop;
+  });
+  addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (!dragged && Math.abs(dx) + Math.abs(dy) > 5) { dragged = true; view.classList.add('drag'); }
+    if (dragged) { view.scrollLeft = sl - dx; view.scrollTop = st - dy; }
+  });
+  addEventListener('pointerup', function () {
+    if (!dragging) return;
+    dragging = false; view.classList.remove('drag');
+    setTimeout(function () { dragged = false; }, 0);
+  });
+
+  /* ---------- lire ---------- */
+  function show() {
+    var list = readable(), it = list[current];
+    if (!it) return close();
+    big.className = 'big ' + sizeClass(it.text);
+    bigText.textContent = it.text;
+    $('fcount').textContent = (current + 1) + ' / ' + list.length;
     $('prevBtn').disabled = current <= 0;
-    $('nextBtn').disabled = current >= papers.length - 1;
+    $('nextBtn').disabled = current >= list.length - 1;
     resetRemove();
   }
-  function open(i){ if (i < 0) return; current = i; show(); focus.classList.add('on'); }
-  function close(){ focus.classList.remove('on'); current = -1; resetRemove(); }
-  function step(d){ const j = current + d; if (j < 0 || j >= papers.length) return; current = j; show(); }
+  function open(i) { if (i < 0) return; current = i; show(); focus.classList.add('on'); }
+  function close() { focus.classList.remove('on'); current = -1; resetRemove(); }
+  function step(d) { var j = current + d; if (j < 0 || j >= readable().length) return; current = j; show(); }
 
-  let armed = false, armT;
-  function resetRemove(){ armed = false; clearTimeout(armT); $('removeBtn').textContent = 'Décrocher'; }
-  $('removeBtn').addEventListener('click', async () => {
+  /* ---------- décrocher = déchirer ---------- */
+  function rip(el, id) {
+    var sheet = el.querySelector('.sheet'), pts = tearLine(id);
+    if (reduce) { tearInPlace(el, id); return Promise.resolve(); }
+    el.style.zIndex = 50;
+    // on tire un peu sur le papier…
+    return sheet.animate([{ transform: 'none' }, { transform: 'translateY(6px) scaleY(1.01)' }, { transform: 'translateY(2px)' }],
+      { duration: 260, easing: 'ease-in-out' }).finished.then(function () {
+      // …il se déchire : le bas tombe, le haut reste sous la punaise
+      var piece = document.createElement('div'); piece.className = 'piece';
+      var copy = sheet.cloneNode(true); copy.style.clipPath = bottomPoly(pts);
+      piece.appendChild(copy);
+      el.insertBefore(piece, el.querySelector('.pin'));
+      tearInPlace(el, id);
+      var hang = sheet.style.transform;
+      sheet.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(7deg)' }, { transform: 'rotate(-4deg)' }, { transform: 'rotate(2deg)' }, { transform: hang }],
+        { duration: 1100, easing: 'ease-out' });
+      var side = Math.random() < 0.5 ? -1 : 1;
+      return piece.animate([
+        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+        { transform: 'translate(' + (side * 10) + 'px,26px) rotate(' + (side * 4) + 'deg)', opacity: 1, offset: 0.22 },
+        { transform: 'translate(' + (side * 60) + 'px,' + Math.max(innerHeight, 700) + 'px) rotate(' + (side * 28) + 'deg)', opacity: 0 }
+      ], { duration: 1300, easing: 'cubic-bezier(.45,0,.85,.5)', fill: 'forwards' }).finished.then(function () {
+        piece.remove(); el.style.zIndex = '';
+      });
+    });
+  }
+
+  var armed = false, armT;
+  function resetRemove() { armed = false; clearTimeout(armT); $('removeBtn').textContent = 'Décrocher'; }
+  $('removeBtn').addEventListener('click', function () {
     if (busy) return;
     if (!armed) { armed = true; $('removeBtn').textContent = 'Sûr ? Décrocher'; armT = setTimeout(resetRemove, 4000); return; }
-    const p = papers[current]; if (!p) return;
+    var it = readable()[current]; if (!it) return;
     busy = true;
-    try {
-      const ok = await rpc('admin_remove_idea', { code, idea: p.id });
+    rpc('admin_remove_idea', { code: code, idea: it.id }).then(function (ok) {
       if (!ok) { busy = false; logout(true); return; }
-    } catch (e) { busy = false; say('Impossible de décrocher ce papier pour l’instant.', 3500); return; }
-    const el = els.get(p.id);
-    const list = papers.filter(x => x.id !== p.id);
-    if (list.length === 0) close(); else { current = Math.min(current, list.length - 1); }
-    if (el && !reduce) await el.animate([{ opacity: 1 }, { opacity: 0, translate: '0 30px', rotate: '8deg' }], { duration: 380, easing: 'ease-in' }).finished.catch(() => {});
-    render(list, false);
-    if (current >= 0) show();
-    busy = false;
+      close();
+      it.torn = true; it.text = null;
+      var el = cells.get(it.id);
+      var r = el.getBoundingClientRect();
+      if (r.top < 60 || r.bottom > innerHeight || r.left < 0 || r.right > innerWidth)
+        view.scrollBy({ left: r.left + r.width / 2 - innerWidth / 2, top: r.top + r.height / 2 - innerHeight / 2, behavior: reduce ? 'auto' : 'smooth' });
+      setTimeout(function () {
+        rip(el, it.id).then(function () { render(items.slice(), false); busy = false; });
+      }, reduce ? 0 : 420);
+    }, function () { busy = false; say('Impossible de décrocher ce papier pour l’instant.', 3500); });
   });
 
-  let armedAll = false, armAllT;
-  $('clearBtn').addEventListener('click', async () => {
+  var armedAll = false, armAllT;
+  $('clearBtn').addEventListener('click', function () {
     if (busy) return;
-    if (!armedAll) { armedAll = true; $('clearBtn').textContent = 'Sûr ? Tout décrocher'; armAllT = setTimeout(() => { armedAll = false; $('clearBtn').textContent = 'Tout décrocher'; }, 4000); return; }
-    armedAll = false; clearTimeout(armAllT); $('clearBtn').textContent = 'Tout décrocher';
+    var b = $('clearBtn');
+    if (!armedAll) { armedAll = true; b.textContent = 'Sûr ? Tout nettoyer'; armAllT = setTimeout(function () { armedAll = false; b.textContent = 'Tout nettoyer'; }, 4000); return; }
+    armedAll = false; clearTimeout(armAllT); b.textContent = 'Tout nettoyer';
     busy = true;
-    try {
-      const ok = await rpc('clear_ideas', { code });
+    rpc('clear_ideas', { code: code }).then(function (ok) {
       if (!ok) { busy = false; logout(true); return; }
-    } catch (e) { busy = false; say('Impossible de tout décrocher pour l’instant.', 3500); return; }
-    if (!reduce) await Promise.all([...els.values()].map((el, i) =>
-      el.animate([{ opacity: 1 }, { opacity: 0, translate: '0 60px', rotate: ((i % 2 ? 1 : -1) * 10) + 'deg' }],
-        { duration: 450, delay: Math.min(i * 30, 600), easing: 'ease-in', fill: 'forwards' }).finished.catch(() => {})));
-    render([], false);
-    busy = false;
+      var all = Array.from(cells.values()), i = 0;
+      var falls = reduce ? [] : all.map(function (el) {
+        return el.animate([{ opacity: 1 }, { opacity: 0, translate: '0 80px', rotate: ((i++ % 2 ? 1 : -1) * 12) + 'deg' }],
+          { duration: 480, delay: Math.min(i * 25, 600), easing: 'ease-in', fill: 'forwards' }).finished;
+      });
+      Promise.all(falls).then(function () { render([], false); busy = false; });
+    }, function () { busy = false; say('Impossible de nettoyer le mur pour l’instant.', 3500); });
   });
 
-  $('outBtn').addEventListener('click', () => logout(false));
+  $('outBtn').addEventListener('click', function () { logout(false); });
   $('closeBtn').addEventListener('click', close);
   $('veil').addEventListener('click', close);
-  $('prevBtn').addEventListener('click', () => step(-1));
-  $('nextBtn').addEventListener('click', () => step(1));
-  addEventListener('keydown', e => {
+  $('prevBtn').addEventListener('click', function () { step(-1); });
+  $('nextBtn').addEventListener('click', function () { step(1); });
+  addEventListener('keydown', function (e) {
     if (!focus.classList.contains('on')) return;
     if (e.key === 'Escape') close();
     else if (e.key === 'ArrowRight') step(1);
     else if (e.key === 'ArrowLeft') step(-1);
   });
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && code && login.hidden) load(false); });
+  addEventListener('resize', function () { if (items.length) layout(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && code && login.hidden && !busy) load(false); });
 
-  // démarrage
-  if (code) { enter(code).then(ok => { if (!ok && login.hidden) logout(false); }); }
+  if (code) enter(code).then(function (ok) { if (!ok && login.hidden) logout(false); });
   else logout(false);
 })();
 </script>
