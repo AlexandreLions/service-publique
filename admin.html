@@ -17,6 +17,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .textbtn{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);padding:10px 6px;transition:color .2s}
 .textbtn:hover,.textbtn:focus-visible{color:var(--ink);outline:none}
 .textbtn.danger:hover{color:#b23b2e}
+a.textbtn{text-decoration:none}
 [hidden]{display:none !important}
 
 /* le mur : une grande surface qu'on parcourt */
@@ -101,6 +102,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="vignette"></div>
 
 <div class="bar" id="bar" hidden>
+  <a class="textbtn" href="./">← La boîte</a>
   <span class="count" id="count"></span>
   <button class="textbtn danger" id="clearBtn">Tout nettoyer</button>
   <button class="textbtn" id="outBtn">Quitter</button>
@@ -122,6 +124,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="login" id="login" hidden>
   <form id="loginForm" autocomplete="off">
     <input id="codeIn" type="password" placeholder="code" aria-label="Code" autocomplete="current-password">
+    <a class="textbtn" href="./">← La boîte</a>
   </form>
 </div>
 
