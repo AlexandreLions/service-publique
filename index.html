@@ -145,32 +145,9 @@ body{background:#efefec}
 .actions{position:absolute;top:calc(100% + 18px);left:-6px;right:-6px;display:flex;justify-content:space-between;transition:opacity .3s}
 .desk.sending .actions{opacity:0}
 
-/* ---------- la lecture (vider) ---------- */
-.reader{position:fixed;inset:0;z-index:20;pointer-events:none;visibility:hidden}
-.reader.on{pointer-events:auto;visibility:visible}
-.reader.lit .veil{opacity:1}
-.rstack{position:fixed;inset:0}
-.rsheet{position:fixed;width:var(--W);height:calc(var(--W) * 4 / 3);
-  left:calc(50% - var(--W) / 2);top:calc(47% - var(--W) * 2 / 3);
-  background:#fff;box-shadow:0 30px 60px -32px rgba(0,0,0,.3), 0 0 0 1px rgba(0,0,0,.04);
-  display:flex;align-items:center;justify-content:center;padding:44px 36px;cursor:pointer;will-change:transform}
-.rsheet p{font:400 25px/1.32 'Instrument Serif',serif;text-align:center;white-space:pre-wrap;overflow-wrap:anywhere;max-height:100%;overflow:hidden}
-.rsheet.sm p{font-size:20px}
-.rsheet.xs p{font-size:16.5px}
-.done{position:fixed;left:0;right:0;top:47%;transform:translateY(-50%);text-align:center;
-  font:italic 400 24px 'Instrument Serif',serif;color:#8d8c87;opacity:0;transition:opacity .4s;pointer-events:none}
-.done.on{opacity:1}
-.rbar{position:fixed;left:0;right:0;bottom:26px;display:flex;justify-content:center;align-items:center;gap:22px;opacity:0;transition:opacity .4s;pointer-events:none}
-.reader.ready .rbar{opacity:1;pointer-events:auto}
-.count{font-size:11px;letter-spacing:.14em;color:var(--mute);min-width:56px;text-align:center;font-variant-numeric:tabular-nums}
-.danger:hover{color:#b23b2e}
-.code{width:110px;border:0;border-bottom:1px solid #cfcec9;background:transparent;outline:0;padding:6px 2px;
-  font:12px Inter,system-ui,sans-serif;letter-spacing:.1em;color:var(--ink);text-align:center}
-
 @media (max-width:560px){
   .title{left:20px;top:20px}
   .mode{right:16px;top:auto;bottom:8px;left:0;text-align:center}
-  .rbar{gap:10px;flex-wrap:wrap;padding:0 12px}
 }
 @media (prefers-reduced-motion:reduce){ .ps{transition:none} }
 </style>
@@ -214,9 +191,7 @@ body{background:#efefec}
 </div>
 <div class="vignette"></div>
 
-<div class="bottom" id="bottom">
-  <button class="textbtn" id="emptyBtn">Vider</button>
-</div>
+<div class="bottom" id="bottom"></div>
 
 <div class="caption" id="caption"></div>
 
@@ -234,27 +209,11 @@ body{background:#efefec}
   </div>
 </div>
 
-<!-- lire -->
-<div class="reader" id="reader">
-  <div class="veil"></div>
-  <div class="rstack" id="rstack"></div>
-  <div class="done" id="done">C’est tout.</div>
-  <div class="rbar">
-    <button class="textbtn" id="prevBtn" aria-label="Idée précédente">←</button>
-    <span class="count" id="count"></span>
-    <button class="textbtn" id="nextBtn" aria-label="Idée suivante">→</button>
-    <button class="textbtn" id="backBtn">Remettre dans la boîte</button>
-    <button class="textbtn danger" id="trashBtn" hidden>Tout jeter</button>
-    <input id="codeIn" class="code" type="password" placeholder="code" hidden autocomplete="off">
-  </div>
-</div>
-
 <script>
 (() => {
   const $ = id => document.getElementById(id);
   const slot = $('slot'), boxwrap = $('boxwrap'), pile = $('pile');
   const desk = $('desk'), sheet = $('sheet'), ta = $('idea');
-  const reader = $('reader'), rstack = $('rstack'), count = $('count'), done = $('done');
   const caption = $('caption'), bottom = $('bottom');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const T = ms => reduce ? Math.round(ms * 0.35) : ms;
@@ -300,9 +259,6 @@ body{background:#efefec}
   const SUPABASE_URL = 'https://zurkvkbilehemrynvwwb.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1cmt2a2JpbGVoZW1yeW52d3diIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ5MTEzNzEsImV4cCI6MjExMDQ4NzM3MX0.DWvG8jqvvPJTfTcwKpIS1g0BenqECiK9A9UoKHwylVM';
   const online = /^https:\/\//.test(SUPABASE_URL) && !SUPABASE_KEY.startsWith('__');
-  const admin = location.hash === '#admin';
-  let local = [];
-  $('trashBtn').hidden = !admin;
 
   const wait = ms => new Promise(r => setTimeout(r, ms));
   async function api(path, opts = {}){
@@ -323,16 +279,6 @@ body{background:#efefec}
       try { await api('/rest/v1/ideas', { method: 'POST', body, headers: { Prefer: 'return=minimal' } }); }
       catch (e) { if (e.status && e.status < 500) throw e; await wait(500 + Math.random() * 700); await api('/rest/v1/ideas', { method: 'POST', body, headers: { Prefer: 'return=minimal' } }); }
     },
-    async all(){
-      if (!online) return local.slice();
-      const rows = await api('/rest/v1/ideas?select=text&limit=2000');
-      return (rows || []).map((r, i) => ({ id: i, text: String(r.text || '') })).filter(x => x.text.trim());
-    },
-    async clear(code){
-      if (!online) { local = []; return; }
-      const ok = await api('/rest/v1/rpc/clear_ideas', { method: 'POST', body: JSON.stringify({ code }) });
-      if (ok !== true) { const e = new Error('code'); e.code = 'bad_code'; throw e; }
-    }
   };
   const errMsg = e => (e && e.status === 400) ? 'Cette idée est trop longue.' : 'L’idée n’a pas pu partir. Réessaie.';
 
@@ -374,7 +320,7 @@ body{background:#efefec}
   function topPileSheet(){ return pile.lastElementChild; }
 
   async function openDesk(){
-    if (busy || desk.classList.contains('on') || reader.classList.contains('on')) return;
+    if (busy || desk.classList.contains('on')) return;
     busy = true;
     ta.value = '';
     settle(sheet);
@@ -460,162 +406,6 @@ body{background:#efefec}
     if (e.key === 'Escape') { e.preventDefault(); putDown(); }
   });
 
-  /* ---------- vider / lire ---------- */
-  const MAXSTACK = 7;
-  let ideas = [], idx = 0, stack = []; // stack[0] = feuille du dessus
-
-  function makeSheet(text){
-    const el = document.createElement('div');
-    el.className = 'rsheet';
-    if (text.length > 260) el.classList.add('xs'); else if (text.length > 140) el.classList.add('sm');
-    const p = document.createElement('p'); p.textContent = text; el.appendChild(p);
-    const r = (Math.random() * 7 - 3.5).toFixed(2), x = (Math.random() * 12 - 6).toFixed(1), y = (Math.random() * 10 - 5).toFixed(1);
-    el._rest = `translate(${x}px,${y}px) rotate(${r}deg)`;
-    return el;
-  }
-  function refresh(){
-    stack.forEach((el, i) => { el.style.zIndex = 100 - i; });
-    const n = ideas.length;
-    count.textContent = idx < n ? `${idx + 1} / ${n}` : `${n} / ${n}`;
-    done.classList.toggle('on', idx >= n);
-    $('prevBtn').disabled = idx <= 0;
-    $('nextBtn').disabled = idx >= n;
-  }
-  function shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
-
-  async function emptyBox(){
-    if (busy || desk.classList.contains('on') || reader.classList.contains('on')) return;
-    busy = true;
-    $('emptyBtn').disabled = true;
-    let items;
-    try { items = await store.all(); }
-    catch (e) { say('Impossible d’ouvrir la boîte pour l’instant.', 4000); busy = false; $('emptyBtn').disabled = false; return; }
-    $('emptyBtn').disabled = false;
-    if (!items.length) { shake(); busy = false; return; }
-
-    ideas = shuffle(items); idx = 0;
-    stack = ideas.slice(0, MAXSTACK).map(x => makeSheet(x.text));
-    rstack.innerHTML = '';
-    for (let i = stack.length - 1; i >= 0; i--) rstack.appendChild(stack[i]);
-    reader.classList.remove('lit', 'ready');
-    reader.classList.add('on');
-    bottom.style.opacity = 0;
-    refresh(); done.classList.remove('on');
-
-    const last = stack.length - 1;
-    const flights = stack.map((el, i) => {
-      const g = slotGeom(el);
-      el.style.transform = g.inside; el.style.clipPath = 'inset(0 0 100% 0)';
-      const delay = (last - i) * 130; // le dessous sort en premier
-      return (async () => {
-        await anim(el, [
-          { transform: g.inside, clipPath: 'inset(0 0 100% 0)' },
-          { transform: g.above, clipPath: 'inset(0 0 0% 0)' }
-        ], { duration: 430, delay, easing: 'cubic-bezier(.2,0,.3,1)' });
-        el.style.clipPath = '';
-        await anim(el, [{ transform: g.above }, { transform: el._rest }], { duration: 760, easing: 'cubic-bezier(.2,.8,.2,1)' });
-        settle(el, el._rest);
-      })();
-    });
-    flash(1, 1600);
-    setTimeout(() => { thump(); wave(.7); }, T(80));
-    setTimeout(() => reader.classList.add('lit'), T(last * 130 + 420));
-    await Promise.all(flights);
-    reader.classList.add('ready');
-    busy = false;
-  }
-
-  function next(){
-    if (busy || idx >= ideas.length) return;
-    const el = stack.shift();
-    const off = Math.min(innerWidth * 0.62, 560);
-    anim(el, [{ transform: el._rest, opacity: 1 }, { transform: `translate(${-off}px,40px) rotate(-16deg)`, opacity: 0 }],
-      { duration: 440, easing: 'cubic-bezier(.4,0,.2,1)' }).then(() => el.remove());
-    idx++;
-    const j = idx + stack.length;
-    if (j < ideas.length) {
-      const n = makeSheet(ideas[j].text);
-      n.style.transform = n._rest;
-      rstack.prepend(n); stack.push(n);
-      anim(n, [{ opacity: 0 }, { opacity: 1 }], { duration: 400, fill: 'none' });
-    }
-    refresh();
-  }
-  function prev(){
-    if (busy || idx <= 0) return;
-    idx--;
-    const el = makeSheet(ideas[idx].text);
-    el.style.transform = el._rest;
-    rstack.appendChild(el); stack.unshift(el);
-    const off = Math.min(innerWidth * 0.62, 560);
-    anim(el, [{ transform: `translate(${-off}px,40px) rotate(-16deg)`, opacity: 0 }, { transform: el._rest, opacity: 1 }],
-      { duration: 440, easing: 'cubic-bezier(.2,.8,.2,1)' }).then(() => settle(el, el._rest));
-    if (stack.length > MAXSTACK) stack.pop().remove();
-    refresh();
-  }
-
-  async function putBack(){
-    if (busy || !reader.classList.contains('on')) return;
-    busy = true;
-    reader.classList.remove('ready', 'lit');
-    done.classList.remove('on');
-    await wait(T(200));
-    const flights = stack.map((el, i) => {
-      const g = slotGeom(el);
-      return (async () => {
-        await anim(el, [{ transform: el._rest }, { transform: g.above }], { duration: 620, delay: i * 110, easing: 'cubic-bezier(.55,0,.2,1)' });
-        await anim(el, [
-          { transform: g.above, clipPath: 'inset(0 0 0% 0)' },
-          { transform: g.inside, clipPath: 'inset(0 0 100% 0)' }
-        ], { duration: 380, easing: 'cubic-bezier(.45,0,.7,.2)' });
-        el.remove();
-      })();
-    });
-    await Promise.all(flights);
-    if (flights.length) { thump(); flash(); }
-    closeReader();
-  }
-  function closeReader(){
-    reader.classList.remove('on', 'lit', 'ready');
-    rstack.innerHTML = ''; stack = []; ideas = []; idx = 0;
-    bottom.style.opacity = '';
-    resetTrash();
-    busy = false;
-  }
-
-  // jeter (code secret, seulement avec #admin)
-  const trashBtn = $('trashBtn'), codeIn = $('codeIn');
-  function resetTrash(){ codeIn.hidden = true; codeIn.value = ''; trashBtn.hidden = !admin; }
-  trashBtn.addEventListener('click', () => { if (busy) return; trashBtn.hidden = true; codeIn.hidden = false; codeIn.focus(); });
-  codeIn.addEventListener('keydown', async e => {
-    e.stopPropagation();
-    if (e.key === 'Escape') { resetTrash(); return; }
-    if (e.key !== 'Enter' || busy) return;
-    const code = codeIn.value; if (!code) return;
-    busy = true;
-    try { await store.clear(code); }
-    catch (err) { say(err.code === 'bad_code' ? 'Mauvais code.' : 'Impossible de tout jeter pour l’instant.', 3000); codeIn.select(); busy = false; return; }
-    resetTrash();
-    reader.classList.remove('ready');
-    await Promise.all(stack.map((el, i) => anim(el, [
-      { transform: el._rest, opacity: 1 },
-      { transform: `translate(${(Math.random() * 80 - 40).toFixed(0)}px,${innerHeight * 0.7}px) rotate(${(Math.random() * 40 - 20).toFixed(0)}deg)`, opacity: 0 }
-    ], { duration: 650, delay: i * 50, easing: 'cubic-bezier(.5,0,.8,.4)' })));
-    closeReader();
-  });
-
-  $('emptyBtn').addEventListener('click', emptyBox);
-  $('nextBtn').addEventListener('click', next);
-  $('prevBtn').addEventListener('click', prev);
-  $('backBtn').addEventListener('click', putBack);
-  rstack.addEventListener('click', e => { if (e.target.closest('.rsheet')) next(); });
-
-  addEventListener('keydown', e => {
-    if (!reader.classList.contains('on')) return;
-    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
-    else if (e.key === 'Escape') { e.preventDefault(); putBack(); }
-  });
 })();
 </script>
 </body>
