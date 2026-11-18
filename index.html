@@ -62,6 +62,18 @@ body{background:#efefec}
   background:radial-gradient(circle at 34% 30%, #ffb3a3 0, #ef6a50 22%, #d4432c 48%, #7e1d10 100%);
   box-shadow:1px 3px 3px rgba(0,0,0,.18)}
 .door:hover .doorpin,.door:focus-visible .doorpin{opacity:1;transform:scale(1.15)}
+/* ---------- la platine (DDJ), debout contre le mur ---------- */
+.ddj{position:absolute;left:0;top:0;transform-style:preserve-3d;transform:translate3d(-335px,0,-452px) rotateX(10deg);cursor:pointer}
+.ddj .df{position:absolute;backface-visibility:hidden}
+.ddj .dfront{left:-75px;top:-265px;width:150px;height:265px;transform:translateZ(11px);border-radius:8px;transition:filter .4s}
+.ddj .dfront svg{display:block;width:100%;height:100%}
+.ddj:hover .dfront,.ddj:focus-visible .dfront{filter:brightness(1.22)}
+.ddj .dside{left:-11px;top:-265px;width:22px;height:265px;transform:translateX(-75px) rotateY(-90deg);background:linear-gradient(90deg,#121214,#232326);border-radius:4px}
+.ddj .dtop{left:-75px;top:-276px;width:150px;height:22px;transform:translateY(-254px) rotateX(90deg);background:#2a2a2d;border-radius:4px}
+.ddjshadow{position:absolute;left:-420px;top:-40px;width:170px;height:80px;transform:translateZ(-430px) rotateX(90deg);filter:blur(10px);pointer-events:none;
+  background:radial-gradient(closest-side, rgba(0,0,0,.28), rgba(0,0,0,0))}
+.ddjwall{position:absolute;left:-400px;top:-250px;width:130px;height:250px;transform:translateZ(-498px);filter:blur(16px);pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.14) 40%, rgba(0,0,0,.2))}
 .fadeout{position:fixed;inset:0;background:#fbfbfa;opacity:0;pointer-events:none;z-index:100;transition:opacity .55s}
 .fadeout.on{opacity:1}
 .vignette{position:fixed;inset:0;pointer-events:none;z-index:1;
@@ -177,6 +189,56 @@ body{background:#efefec}
   <div class="floorshade pool"></div>
   <div class="floorshade box-sh"></div>
   <div class="floorshade pile-sh"></div>
+  <div class="ddjwall"></div>
+  <div class="ddjshadow"></div>
+  <a class="ddj" id="ddj" href="catalogue.html" aria-label="Catalogue">
+    <div class="df dside"></div>
+    <div class="df dtop"></div>
+    <div class="df dfront"><svg class="ddjsvg" viewBox="0 0 272 482" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<defs>
+<linearGradient id="ddjBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2e2e31"/><stop offset=".55" stop-color="#1e1e20"/><stop offset="1" stop-color="#161618"/></linearGradient>
+<radialGradient id="ddjJog" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#2c2c2f"/><stop offset=".65" stop-color="#18181a"/><stop offset="1" stop-color="#0d0d0e"/></radialGradient>
+<linearGradient id="ddjCap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4a4e"/><stop offset="1" stop-color="#252527"/></linearGradient>
+<g id="ddjDeck">
+<circle cx="136" cy="104" r="75" fill="#0b0b0c"/>
+<circle cx="136" cy="104" r="71" fill="url(#ddjJog)" stroke="#3c3c40" stroke-width="2"/>
+<circle cx="136" cy="104" r="60" fill="none" stroke="#232326" stroke-width="1"/>
+<circle cx="136" cy="104" r="50" fill="none" stroke="#202023" stroke-width="1"/>
+<circle cx="136" cy="104" r="40" fill="none" stroke="#1f1f22" stroke-width="1"/>
+<circle cx="136" cy="104" r="23" fill="#2b2b2e" stroke="#47474b" stroke-width="1.2"/>
+<circle cx="136" cy="104" r="3" fill="#5a5a5e"/>
+<rect x="231" y="34" width="6" height="128" rx="3" fill="#0c0c0d"/>
+<rect x="222" y="86" width="24" height="12" rx="2.5" fill="url(#ddjCap)" stroke="#55555a" stroke-width=".8"/>
+<circle cx="35" cy="138" r="11" fill="#151517" stroke="#3a3a3e" stroke-width="1.2"/>
+<circle cx="35" cy="166" r="11" fill="#151517" stroke="#3a3a3e" stroke-width="1.2"/>
+<path d="M32 162 l7 4 -7 4z" fill="#4c4c50"/>
+<rect x="30" y="134" width="10" height="8" rx="1" fill="none" stroke="#4c4c50" stroke-width="1"/>
+<circle cx="35" cy="40" r="7" fill="#1a1a1c" stroke="#3a3a3e"/>
+<circle cx="35" cy="64" r="7" fill="#1a1a1c" stroke="#3a3a3e"/>
+<g fill="#121214" stroke="#333337" stroke-width="1">
+<rect x="68" y="186" width="29" height="14" rx="2.5"/><rect x="102" y="186" width="29" height="14" rx="2.5"/>
+<rect x="141" y="186" width="29" height="14" rx="2.5"/><rect x="175" y="186" width="29" height="14" rx="2.5"/>
+</g>
+</g>
+</defs>
+<rect x="1" y="1" width="270" height="480" rx="14" fill="url(#ddjBody)" stroke="#3b3b3f" stroke-width="1.5"/>
+<use href="#ddjDeck"/>
+<rect x="14" y="210" width="244" height="62" rx="6" fill="#141416" stroke="#2c2c30" stroke-width="1"/>
+<g fill="#202023" stroke="#48484c" stroke-width="1">
+<circle cx="42" cy="228" r="8"/><circle cx="80" cy="228" r="8"/><circle cx="118" cy="228" r="8"/>
+<circle cx="154" cy="228" r="8"/><circle cx="192" cy="228" r="8"/><circle cx="230" cy="228" r="8"/>
+</g>
+<g stroke="#77777c" stroke-width="1.4" stroke-linecap="round">
+<path d="M42 228 l0 -6"/><path d="M80 228 l3 -5"/><path d="M118 228 l-3 -5"/><path d="M154 228 l0 -6"/><path d="M192 228 l4 -4"/><path d="M230 228 l-2 -6"/>
+</g>
+<rect x="30" y="252" width="86" height="5" rx="2.5" fill="#0b0b0c"/>
+<rect x="156" y="252" width="86" height="5" rx="2.5" fill="#0b0b0c"/>
+<rect x="88" y="246" width="12" height="17" rx="2" fill="url(#ddjCap)" stroke="#55555a" stroke-width=".8"/>
+<rect x="174" y="246" width="12" height="17" rx="2" fill="url(#ddjCap)" stroke="#55555a" stroke-width=".8"/>
+<use href="#ddjDeck" y="276"/>
+<text x="136" y="474" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="7" letter-spacing="2.2" fill="#55555a">SERVICE PUBLIQUE</text>
+</svg></div>
+  </a>
 
   <div class="boxwrap" id="boxwrap">
     <div class="box">
@@ -231,9 +293,9 @@ body{background:#efefec}
 
   /* ---------- mise à l'échelle ---------- */
   function fit(){
-    const s = Math.min(1, (innerWidth - 20) / 700, innerHeight / 640);
+    const s = Math.min(1, (innerWidth - 16) / 790, innerHeight / 640);
     document.documentElement.style.setProperty('--s', s.toFixed(3));
-    document.getElementById('stage').style.marginLeft = innerWidth < 760 ? (-85 * s).toFixed(1) + 'px' : '0px';
+    document.getElementById('stage').style.marginLeft = (-14 * s).toFixed(1) + 'px';
   }
   fit(); addEventListener('resize', fit);
 
@@ -412,11 +474,11 @@ body{background:#efefec}
   $('sendBtn').addEventListener('click', send);
   $('cancelBtn').addEventListener('click', putDown);
   $('deskVeil').addEventListener('click', putDown);
-  $('door').addEventListener('click', e => {
+  [['door', 'admin.html'], ['ddj', 'catalogue.html']].forEach(([id, url]) => $(id).addEventListener('click', e => {
     e.preventDefault();
     $('fadeout').classList.add('on');
-    setTimeout(() => { location.href = 'admin.html'; }, reduce ? 0 : 550);
-  });
+    setTimeout(() => { location.href = url; }, reduce ? 0 : 550);
+  }));
   addEventListener('pageshow', () => $('fadeout').classList.remove('on'));
   ta.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); }
