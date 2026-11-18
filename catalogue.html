@@ -6,7 +6,7 @@
 <title>Service Publique — catalogue</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <style>
 :root{ --ink:#1c1c1a; --mute:#8d8c87; --seam:#e1e1dd; --accent:#d4432c; --S:clamp(130px, 36vw, 210px); }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -88,6 +88,65 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .links a:hover{border-bottom-color:var(--accent)}
 .close{position:fixed;top:14px;right:clamp(16px,4vw,32px);z-index:2}
 @media (prefers-reduced-motion:reduce){ .disc,.sleeve,.card,.veil{transition:none} .big .disc{animation:none} }
+
+/* ================= Y2K : catalogue ================= */
+.textbtn,.label,.kind,.links a{font-family:Michroma,Inter,system-ui,sans-serif;font-size:9px;letter-spacing:.24em}
+.cap .a{font-family:Michroma,Inter,system-ui,sans-serif;font-size:7.5px;letter-spacing:.2em}
+.gen .m{font-family:Michroma,Inter,system-ui,sans-serif;font-size:clamp(6px,1.3vw,7.5px);letter-spacing:.16em}
+.shelf::after{height:11px;bottom:-11px;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(232,238,247,.66));
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-top:1px solid #fff;
+  box-shadow:0 1px 0 #a7b0be, 0 2px 0 #f6f8fb, 0 3px 0 rgba(150,160,178,.4), 0 20px 24px -14px rgba(40,50,80,.28)}
+.disc::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;mix-blend-mode:screen;
+  background:conic-gradient(from 20deg, rgba(255,255,255,0) 0deg, rgba(255,200,240,.24) 32deg, rgba(190,220,255,.3) 62deg, rgba(255,255,255,0) 96deg,
+    rgba(255,255,255,0) 200deg, rgba(200,255,235,.22) 232deg, rgba(255,240,200,.24) 262deg, rgba(255,255,255,0) 298deg)}
+.gen::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.24;
+  background:linear-gradient(120deg,#ffd6f1 0%,#d4e8ff 30%,#d2fff2 55%,#fff0d0 80%,#ffd6f1 100%)}
+.sleeve::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s;
+  background:radial-gradient(circle at var(--gx,30%) var(--gy,20%), rgba(255,255,255,.75), rgba(255,255,255,0) 48%)}
+.rec:hover .sleeve::after{opacity:1}
+.rec:hover .sleeve,.rec:focus-visible .sleeve{transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-4px);transition:transform .12s ease-out}
+.player iframe{box-shadow:0 0 0 1px #fff, 0 0 0 2px #c3cad5, 0 14px 26px -16px rgba(40,50,80,.35)}
+
+/* ================= Y2K : grain, particules, démarrage ================= */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.07;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .47 0 0 0 0 .52 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.motes{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.motes i{position:absolute;bottom:-14px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 35% 35%,#fff 0,rgba(226,238,255,.85) 55%,rgba(255,220,246,0) 100%);
+  box-shadow:0 0 10px rgba(255,255,255,.95),0 0 3px rgba(150,175,230,.55);animation:drift linear infinite}
+@keyframes drift{0%{transform:translate(0,0);opacity:0}12%{opacity:.85}88%{opacity:.6}100%{transform:translate(var(--dx),-112vh);opacity:0}}
+.boot{position:fixed;inset:0;z-index:300;display:grid;place-items:center;pointer-events:none;
+  background:radial-gradient(circle at 50% 45%,#ffffff 0,#f3f4f7 62%,#e7e9ee 100%);animation:bootout .8s 1.5s ease forwards}
+@keyframes bootout{to{opacity:0;visibility:hidden}}
+.boot .orb{width:56px;height:56px;border-radius:50%;
+  background:radial-gradient(circle at 32% 27%,#fff 0,rgba(255,255,255,.95) 13%,rgba(255,255,255,0) 38%),
+    conic-gradient(from 0deg,#ffd3f1,#d0e4ff,#cffff0,#fff2cf,#ffd3f1);
+  box-shadow:inset -7px -9px 16px rgba(110,120,155,.28),0 16px 26px -12px rgba(70,80,115,.35);animation:orbspin 1.4s linear infinite}
+@keyframes orbspin{to{filter:hue-rotate(360deg)}}
+.boot .bootbar{position:absolute;top:calc(50% + 54px);left:50%;width:96px;height:1px;margin-left:-48px;background:rgba(40,50,80,.1);overflow:hidden}
+.boot .bootbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c3cde0,#6f7f9f);animation:load 1.25s cubic-bezier(.3,0,.2,1) forwards}
+@keyframes load{to{width:100%}}
+@media (prefers-reduced-motion:reduce){ .boot{display:none} .motes{display:none} }
+
+/* ================= Y2K : halo holographique + bulles de verre ================= */
+.holo{position:fixed;inset:0;pointer-events:none;z-index:2;mix-blend-mode:multiply;opacity:.6;
+  background:
+    radial-gradient(60% 50% at 6% 10%, rgba(255,208,238,.7), rgba(255,208,238,0) 70%),
+    radial-gradient(55% 45% at 94% 14%, rgba(196,220,255,.75), rgba(196,220,255,0) 70%),
+    radial-gradient(60% 50% at 88% 94%, rgba(200,255,236,.65), rgba(200,255,236,0) 70%),
+    radial-gradient(50% 45% at 10% 90%, rgba(255,236,196,.65), rgba(255,236,196,0) 70%);
+  animation:holo 20s ease-in-out infinite alternate}
+@keyframes holo{to{filter:hue-rotate(50deg)}}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.bubbles b{position:absolute;border-radius:50%;animation:bob var(--d) ease-in-out infinite alternate;
+  background:
+    radial-gradient(circle at 31% 25%, rgba(255,255,255,.98) 0, rgba(255,255,255,.9) 6%, rgba(255,255,255,0) 19%),
+    radial-gradient(circle at 68% 76%, rgba(255,255,255,.55) 0, rgba(255,255,255,0) 14%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 58%, rgba(205,222,255,.38) 71%, rgba(255,205,238,.5) 81%, rgba(204,255,236,.5) 89%, rgba(255,255,255,.9) 96.5%, rgba(255,255,255,0) 100%);
+  box-shadow:0 12px 26px -14px rgba(60,80,130,.3)}
+@keyframes bob{from{transform:translate(0,0)}to{transform:translate(var(--bx),var(--by))}}
+@media (prefers-reduced-motion:reduce){ .holo,.bubbles b{animation:none} }
 </style>
 </head>
 <body>
@@ -224,6 +283,58 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       lastN = perShelf();
       render();
     });
+})();
+</script>
+<div class="holo"></div>
+<div class="bubbles" id="bubbles"></div>
+<div class="motes" id="motes"></div>
+<div class="grain"></div>
+<div class="boot" id="boot"><div class="orb"></div><div class="bootbar"><i></i></div></div>
+<script>
+(function () {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  try { if (sessionStorage.getItem('sp-boot')) document.getElementById('boot').remove(); else sessionStorage.setItem('sp-boot', '1'); } catch (e) {}
+  var bub = document.getElementById('bubbles');
+  if (bub) for (var k = 0; k < 7; k++) {
+    var bb = document.createElement('b'), dd = 18 + Math.random() * 74;
+    bb.style.width = bb.style.height = dd.toFixed(0) + 'px';
+    bb.style.left = (Math.random() * 94).toFixed(1) + '%';
+    bb.style.top = (4 + Math.random() * 86).toFixed(1) + '%';
+    bb.style.setProperty('--d', (9 + Math.random() * 9).toFixed(1) + 's');
+    bb.style.setProperty('--bx', (Math.random() * 60 - 30).toFixed(0) + 'px');
+    bb.style.setProperty('--by', (Math.random() * 90 - 45).toFixed(0) + 'px');
+    bb.style.animationDelay = (-Math.random() * 10).toFixed(1) + 's';
+    bub.appendChild(bb);
+  }
+  if (reduce) return;
+  var motes = document.getElementById('motes');
+  for (var i = 0; i < 14; i++) {
+    var m = document.createElement('i'), sz = 2 + Math.random() * 4.5;
+    m.style.left = (Math.random() * 100).toFixed(1) + '%';
+    m.style.width = m.style.height = sz.toFixed(1) + 'px';
+    m.style.animationDuration = (18 + Math.random() * 18).toFixed(1) + 's';
+    m.style.animationDelay = (-Math.random() * 36).toFixed(1) + 's';
+    m.style.setProperty('--dx', (Math.random() * 90 - 45).toFixed(0) + 'px');
+    motes.appendChild(m);
+  }
+})();
+</script>
+<script>
+(function () {
+  // pochettes qui s'inclinent sous la souris, avec un reflet
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia('(pointer: fine)').matches) return;
+  document.addEventListener('pointermove', function (e) {
+    var rec = e.target.closest && e.target.closest('.rack .rec');
+    document.querySelectorAll('.rack .sleeve[data-tilt]').forEach(function (s) { if (!rec || !rec.contains(s)) { s.removeAttribute('data-tilt'); s.style.removeProperty('--rx'); s.style.removeProperty('--ry'); } });
+    if (!rec) return;
+    var s = rec.querySelector('.sleeve'), r = rec.getBoundingClientRect();
+    var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    s.setAttribute('data-tilt', '1');
+    s.style.setProperty('--ry', ((x - .5) * 16).toFixed(1) + 'deg');
+    s.style.setProperty('--rx', ((.5 - y) * 14).toFixed(1) + 'deg');
+    s.style.setProperty('--gx', (x * 100).toFixed(0) + '%');
+    s.style.setProperty('--gy', (y * 100).toFixed(0) + '%');
+  });
 })();
 </script>
 </body>
