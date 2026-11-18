@@ -47,8 +47,8 @@ body{background:#efefec}
 .floor{position:absolute;left:-960px;top:-560px;width:1920px;height:1120px;pointer-events:none;
   transform:translateZ(60px) rotateX(90deg);
   background:
-    linear-gradient(90deg, rgba(110,140,200,.075) 0 1px, transparent 1px) 0 0/80px 80px,
-    linear-gradient(0deg, rgba(110,140,200,.075) 0 1px, transparent 1px) 0 0/80px 80px,
+    linear-gradient(90deg, rgba(110,140,200,.14) 0 1px, transparent 1px) 0 0/80px 80px,
+    linear-gradient(0deg, rgba(110,140,200,.14) 0 1px, transparent 1px) 0 0/80px 80px,
     radial-gradient(ellipse 60% 40% at 50% 8%, rgba(214,232,255,.55), rgba(214,232,255,0) 70%),
     linear-gradient(90deg, rgba(0,0,0,.035) 0 2px, transparent 2px) 0 0/320px 320px,
     linear-gradient(0deg, rgba(0,0,0,.035) 0 2px, transparent 2px) 0 0/320px 320px,
@@ -183,8 +183,8 @@ body{background:#efefec}
 .front::after,.top::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;opacity:.6;
   background:linear-gradient(120deg,#ffd6f1 0%,#d4e8ff 28%,#d2fff2 52%,#fff0d0 76%,#ffd6f1 100%);background-size:240% 240%;
   animation:pearl 16s ease-in-out infinite alternate}
-.front::after{mix-blend-mode:normal;opacity:.3}
-.top::after{mix-blend-mode:normal;opacity:.22}
+.front::after{mix-blend-mode:normal;opacity:.46}
+.top::after{mix-blend-mode:normal;opacity:.34}
 .front{background:
     linear-gradient(to top, #b9c1cc 0, #fbfcfd 2px, #8d97a6 4px, #e7ebf0 6px, #ffffff 7px, rgba(255,255,255,0) 9px),
     linear-gradient(180deg,#f6f6f4 0%,#ecebe8 60%,#e2e1dd 100%)}
@@ -211,6 +211,25 @@ body{background:#efefec}
 .boot .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c3cde0,#6f7f9f);animation:load 1.25s cubic-bezier(.3,0,.2,1) forwards}
 @keyframes load{to{width:100%}}
 @media (prefers-reduced-motion:reduce){ .front::after,.top::after{animation:none} .boot{display:none} .motes{display:none} }
+
+/* ================= Y2K : halo holographique + bulles de verre ================= */
+.holo{position:fixed;inset:0;pointer-events:none;z-index:2;mix-blend-mode:multiply;opacity:.6;
+  background:
+    radial-gradient(60% 50% at 6% 10%, rgba(255,208,238,.7), rgba(255,208,238,0) 70%),
+    radial-gradient(55% 45% at 94% 14%, rgba(196,220,255,.75), rgba(196,220,255,0) 70%),
+    radial-gradient(60% 50% at 88% 94%, rgba(200,255,236,.65), rgba(200,255,236,0) 70%),
+    radial-gradient(50% 45% at 10% 90%, rgba(255,236,196,.65), rgba(255,236,196,0) 70%);
+  animation:holo 20s ease-in-out infinite alternate}
+@keyframes holo{to{filter:hue-rotate(50deg)}}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.bubbles b{position:absolute;border-radius:50%;animation:bob var(--d) ease-in-out infinite alternate;
+  background:
+    radial-gradient(circle at 31% 25%, rgba(255,255,255,.98) 0, rgba(255,255,255,.9) 6%, rgba(255,255,255,0) 19%),
+    radial-gradient(circle at 68% 76%, rgba(255,255,255,.55) 0, rgba(255,255,255,0) 14%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 58%, rgba(205,222,255,.38) 71%, rgba(255,205,238,.5) 81%, rgba(204,255,236,.5) 89%, rgba(255,255,255,.9) 96.5%, rgba(255,255,255,0) 100%);
+  box-shadow:0 12px 26px -14px rgba(60,80,130,.3)}
+@keyframes bob{from{transform:translate(0,0)}to{transform:translate(var(--bx),var(--by))}}
+@media (prefers-reduced-motion:reduce){ .holo,.bubbles b{animation:none} }
 </style>
 </head>
 <body>
@@ -333,6 +352,8 @@ body{background:#efefec}
   </div>
 </div>
 <div class="vignette"></div>
+<div class="holo"></div>
+<div class="bubbles" id="bubbles"></div>
 <div class="motes" id="motes"></div>
 <div class="grain"></div>
 <div class="boot" id="boot"><div class="orb"></div><div class="bar"><i></i></div></div>
@@ -586,6 +607,18 @@ body{background:#efefec}
       m.style.setProperty('--dx', (Math.random() * 90 - 45).toFixed(0) + 'px');
       motes.appendChild(m);
     }
+  }
+  var bub = document.getElementById('bubbles');
+  if (bub) for (var k = 0; k < 7; k++) {
+    var bb = document.createElement('b'), dd = 18 + Math.random() * 74;
+    bb.style.width = bb.style.height = dd.toFixed(0) + 'px';
+    bb.style.left = (Math.random() * 94).toFixed(1) + '%';
+    bb.style.top = (4 + Math.random() * 86).toFixed(1) + '%';
+    bb.style.setProperty('--d', (9 + Math.random() * 9).toFixed(1) + 's');
+    bb.style.setProperty('--bx', (Math.random() * 60 - 30).toFixed(0) + 'px');
+    bb.style.setProperty('--by', (Math.random() * 90 - 45).toFixed(0) + 'px');
+    bb.style.animationDelay = (-Math.random() * 10).toFixed(1) + 's';
+    bub.appendChild(bb);
   }
   if (!reduce && matchMedia('(pointer: fine)').matches) {
     const st = $('stage');
