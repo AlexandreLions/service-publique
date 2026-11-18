@@ -326,10 +326,24 @@ body{background:#efefec}
   const T = ms => reduce ? Math.round(ms * 0.35) : ms;
 
   /* ---------- mise à l'échelle ---------- */
+  // la scène se mesure elle-même pour tenir dans l'écran (platine, boîte, feuilles)
   function fit(){
-    const s = Math.min(1, (innerWidth - 16) / 940, innerHeight / 640);
-    document.documentElement.style.setProperty('--s', s.toFixed(3));
-    document.getElementById('stage').style.marginLeft = innerWidth < 1000 ? (78 * s).toFixed(1) + 'px' : '0px';
+    const st = document.getElementById('stage'), root = document.documentElement;
+    st.style.marginLeft = '0px'; root.style.setProperty('--s', '1');
+    let l = Infinity, r = -Infinity;
+    ['.ddj .dfront', '.pile .ps:first-child', '.box .front'].forEach(q => {
+      const e = document.querySelector(q); if (!e) return;
+      const b = e.getBoundingClientRect(); l = Math.min(l, b.left); r = Math.max(r, b.right);
+    });
+    const pad = Math.min(28, innerWidth * 0.05), cx = innerWidth / 2;
+    const s = Math.min(1, (innerWidth - 2 * pad) / (r - l), innerHeight / 640);
+    root.style.setProperty('--s', s.toFixed(3));
+    const L = cx + (l - cx) * s, R = cx + (r - cx) * s;
+    let m = 0;
+    if (s < 1) m = -((l + r) / 2 - cx) * s;
+    else if (L < pad) m = pad - L;
+    else if (R > innerWidth - pad) m = innerWidth - pad - R;
+    st.style.marginLeft = m.toFixed(1) + 'px';
   }
   fit(); addEventListener('resize', fit);
 
