@@ -7,7 +7,7 @@
 <title>Service Publique — le mur</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&family=Michroma&display=swap" rel="stylesheet">
 <style>
 :root{ --ink:#1c1c1a; --mute:#8d8c87; --seam:#e1e1dd; --pin:#d4432c; }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -94,6 +94,57 @@ a.textbtn{text-decoration:none}
   font:italic 400 18px 'Instrument Serif',serif;color:#6f6e69;opacity:0;transition:opacity .4s}
 .caption.on{opacity:1}
 @media (prefers-reduced-motion:reduce){ .cell,.big,.veil{transition:none} }
+
+/* ================= Y2K : mur ================= */
+.textbtn,.count,.fcount{font-family:Michroma,Inter,system-ui,sans-serif;font-size:9px;letter-spacing:.24em}
+.login input{font-family:Michroma,Inter,system-ui,sans-serif;font-size:12px;letter-spacing:.34em}
+.login input:focus{border-bottom-color:#7f8fb0;box-shadow:0 10px 18px -14px rgba(120,150,220,.7)}
+.pin{box-shadow:0 0 0 1.5px #f4f6f9, 0 0 0 2.5px #98a2b1, 0 0 0 3px rgba(255,255,255,.8), 0 2px 2px rgba(0,0,0,.25), 3px 7px 8px rgba(0,0,0,.18)}
+.sheet::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s;
+  background:linear-gradient(125deg,rgba(255,214,241,0) 25%,rgba(255,214,241,.28) 40%,rgba(212,232,255,.38) 52%,rgba(210,255,242,.28) 64%,rgba(210,255,242,0) 78%)}
+.cell:not(.torn):hover > .sheet::after{opacity:1}
+.big::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(125deg,rgba(255,214,241,0) 30%,rgba(255,214,241,.16) 44%,rgba(212,232,255,.22) 54%,rgba(210,255,242,.14) 64%,rgba(210,255,242,0) 76%)}
+
+/* ================= Y2K : grain, particules, démarrage ================= */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.07;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .47 0 0 0 0 .52 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.motes{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.motes i{position:absolute;bottom:-14px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 35% 35%,#fff 0,rgba(226,238,255,.85) 55%,rgba(255,220,246,0) 100%);
+  box-shadow:0 0 10px rgba(255,255,255,.95),0 0 3px rgba(150,175,230,.55);animation:drift linear infinite}
+@keyframes drift{0%{transform:translate(0,0);opacity:0}12%{opacity:.85}88%{opacity:.6}100%{transform:translate(var(--dx),-112vh);opacity:0}}
+.boot{position:fixed;inset:0;z-index:300;display:grid;place-items:center;pointer-events:none;
+  background:radial-gradient(circle at 50% 45%,#ffffff 0,#f3f4f7 62%,#e7e9ee 100%);animation:bootout .8s 1.5s ease forwards}
+@keyframes bootout{to{opacity:0;visibility:hidden}}
+.boot .orb{width:56px;height:56px;border-radius:50%;
+  background:radial-gradient(circle at 32% 27%,#fff 0,rgba(255,255,255,.95) 13%,rgba(255,255,255,0) 38%),
+    conic-gradient(from 0deg,#ffd3f1,#d0e4ff,#cffff0,#fff2cf,#ffd3f1);
+  box-shadow:inset -7px -9px 16px rgba(110,120,155,.28),0 16px 26px -12px rgba(70,80,115,.35);animation:orbspin 1.4s linear infinite}
+@keyframes orbspin{to{filter:hue-rotate(360deg)}}
+.boot .bootbar{position:absolute;top:calc(50% + 54px);left:50%;width:96px;height:1px;margin-left:-48px;background:rgba(40,50,80,.1);overflow:hidden}
+.boot .bootbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c3cde0,#6f7f9f);animation:load 1.25s cubic-bezier(.3,0,.2,1) forwards}
+@keyframes load{to{width:100%}}
+@media (prefers-reduced-motion:reduce){ .boot{display:none} .motes{display:none} }
+
+/* ================= Y2K : halo holographique + bulles de verre ================= */
+.holo{position:fixed;inset:0;pointer-events:none;z-index:2;mix-blend-mode:multiply;opacity:.6;
+  background:
+    radial-gradient(60% 50% at 6% 10%, rgba(255,208,238,.7), rgba(255,208,238,0) 70%),
+    radial-gradient(55% 45% at 94% 14%, rgba(196,220,255,.75), rgba(196,220,255,0) 70%),
+    radial-gradient(60% 50% at 88% 94%, rgba(200,255,236,.65), rgba(200,255,236,0) 70%),
+    radial-gradient(50% 45% at 10% 90%, rgba(255,236,196,.65), rgba(255,236,196,0) 70%);
+  animation:holo 20s ease-in-out infinite alternate}
+@keyframes holo{to{filter:hue-rotate(50deg)}}
+.bubbles{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.bubbles b{position:absolute;border-radius:50%;animation:bob var(--d) ease-in-out infinite alternate;
+  background:
+    radial-gradient(circle at 31% 25%, rgba(255,255,255,.98) 0, rgba(255,255,255,.9) 6%, rgba(255,255,255,0) 19%),
+    radial-gradient(circle at 68% 76%, rgba(255,255,255,.55) 0, rgba(255,255,255,0) 14%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 58%, rgba(205,222,255,.38) 71%, rgba(255,205,238,.5) 81%, rgba(204,255,236,.5) 89%, rgba(255,255,255,.9) 96.5%, rgba(255,255,255,0) 100%);
+  box-shadow:0 12px 26px -14px rgba(60,80,130,.3)}
+@keyframes bob{from{transform:translate(0,0)}to{transform:translate(var(--bx),var(--by))}}
+@media (prefers-reduced-motion:reduce){ .holo,.bubbles b{animation:none} }
 </style>
 </head>
 <body>
@@ -474,6 +525,40 @@ a.textbtn{text-decoration:none}
 
   if (code) enter(code).then(function (ok) { if (!ok && login.hidden) logout(false); });
   else logout(false);
+})();
+</script>
+<div class="holo"></div>
+<div class="bubbles" id="bubbles"></div>
+<div class="motes" id="motes"></div>
+<div class="grain"></div>
+<div class="boot" id="boot"><div class="orb"></div><div class="bootbar"><i></i></div></div>
+<script>
+(function () {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  try { if (sessionStorage.getItem('sp-boot')) document.getElementById('boot').remove(); else sessionStorage.setItem('sp-boot', '1'); } catch (e) {}
+  var bub = document.getElementById('bubbles');
+  if (bub) for (var k = 0; k < 7; k++) {
+    var bb = document.createElement('b'), dd = 18 + Math.random() * 74;
+    bb.style.width = bb.style.height = dd.toFixed(0) + 'px';
+    bb.style.left = (Math.random() * 94).toFixed(1) + '%';
+    bb.style.top = (4 + Math.random() * 86).toFixed(1) + '%';
+    bb.style.setProperty('--d', (9 + Math.random() * 9).toFixed(1) + 's');
+    bb.style.setProperty('--bx', (Math.random() * 60 - 30).toFixed(0) + 'px');
+    bb.style.setProperty('--by', (Math.random() * 90 - 45).toFixed(0) + 'px');
+    bb.style.animationDelay = (-Math.random() * 10).toFixed(1) + 's';
+    bub.appendChild(bb);
+  }
+  if (reduce) return;
+  var motes = document.getElementById('motes');
+  for (var i = 0; i < 14; i++) {
+    var m = document.createElement('i'), sz = 2 + Math.random() * 4.5;
+    m.style.left = (Math.random() * 100).toFixed(1) + '%';
+    m.style.width = m.style.height = sz.toFixed(1) + 'px';
+    m.style.animationDuration = (18 + Math.random() * 18).toFixed(1) + 's';
+    m.style.animationDelay = (-Math.random() * 36).toFixed(1) + 's';
+    m.style.setProperty('--dx', (Math.random() * 90 - 45).toFixed(0) + 'px');
+    motes.appendChild(m);
+  }
 })();
 </script>
 </body>
