@@ -54,6 +54,16 @@ body{background:#efefec}
   background:#fff;box-shadow:0 0 22px 7px rgba(255,255,255,.95), 0 0 70px 24px rgba(255,255,255,.7)}
 .boxrefl{position:absolute;left:-120px;top:0;width:240px;height:90px;transform:translateZ(100px) translateY(calc(var(--lift) * 1px));pointer-events:none;
   background:linear-gradient(180deg, rgba(205,204,199,.34), rgba(236,236,232,0) 85%)}
+.door{position:absolute;left:1124px;top:1124px;width:152px;height:152px;pointer-events:auto;cursor:pointer;display:block;outline:none}
+.door::before{content:"";position:absolute;inset:-14px;opacity:0;transition:opacity .6s;
+  background:radial-gradient(circle at 50% 50%, #fff 0, rgba(255,255,255,.95) 40%, rgba(255,255,255,0) 72%)}
+.door:hover::before,.door:focus-visible::before{opacity:1}
+.doorpin{position:absolute;left:50%;top:16px;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;opacity:.55;transition:opacity .4s, transform .4s;
+  background:radial-gradient(circle at 34% 30%, #ffb3a3 0, #ef6a50 22%, #d4432c 48%, #7e1d10 100%);
+  box-shadow:1px 3px 3px rgba(0,0,0,.18)}
+.door:hover .doorpin,.door:focus-visible .doorpin{opacity:1;transform:scale(1.15)}
+.fadeout{position:fixed;inset:0;background:#fbfbfa;opacity:0;pointer-events:none;z-index:100;transition:opacity .55s}
+.fadeout.on{opacity:1}
 .vignette{position:fixed;inset:0;pointer-events:none;z-index:1;
   background:radial-gradient(ellipse 90% 80% at 50% 42%, transparent 50%, rgba(70,70,62,.11) 100%)}
 
@@ -157,7 +167,7 @@ body{background:#efefec}
 
 
 <div class="stage" id="stage">
-  <div class="wall back" id="backwall"></div>
+  <div class="wall back" id="backwall"><a class="door" id="door" href="admin.html" aria-label="Le mur"><span class="doorpin"></span></a></div>
   <div class="wall refl"></div>
   <div class="wall side-l"></div>
   <div class="wall side-r"></div>
@@ -194,6 +204,7 @@ body{background:#efefec}
 <div class="bottom" id="bottom"></div>
 
 <div class="caption" id="caption"></div>
+<div class="fadeout" id="fadeout"></div>
 
 <!-- écrire -->
 <div class="desk" id="desk">
@@ -401,6 +412,12 @@ body{background:#efefec}
   $('sendBtn').addEventListener('click', send);
   $('cancelBtn').addEventListener('click', putDown);
   $('deskVeil').addEventListener('click', putDown);
+  $('door').addEventListener('click', e => {
+    e.preventDefault();
+    $('fadeout').classList.add('on');
+    setTimeout(() => { location.href = 'admin.html'; }, reduce ? 0 : 550);
+  });
+  addEventListener('pageshow', () => $('fadeout').classList.remove('on'));
   ta.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); send(); }
     if (e.key === 'Escape') { e.preventDefault(); putDown(); }
