@@ -31,12 +31,12 @@ body{background:#efefec}
 .wall{position:absolute;backface-visibility:hidden;pointer-events:none;
   background-color:var(--seam);background-image:var(--grid);background-size:160px 160px;background-position:0 100%}
 .wall::after{content:"";position:absolute;inset:0}
-.wall.back{left:-960px;top:-1600px;width:1920px;height:1600px;transform:translateZ(-500px)}
+.wall.back{left:-960px;top:-2800px;width:1920px;height:2800px;transform:translateZ(-500px)}
 .wall.back::after{background:
   linear-gradient(90deg, rgba(0,0,0,.05), transparent 7%, transparent 93%, rgba(0,0,0,.05)),
   linear-gradient(0deg, rgba(0,0,0,.035), transparent 10%)}
 .wall.refl{left:-960px;top:0;width:1920px;height:1400px;transform:translateZ(-500px);background-position:0 0}
-.wall.side-l,.wall.side-r{left:-560px;top:-1900px;width:1120px;height:1900px}
+.wall.side-l,.wall.side-r{left:-560px;top:-3000px;width:1120px;height:3000px}
 .wall.side-l{transform:translateX(-960px) translateZ(60px) rotateY(90deg)}
 .wall.side-r{transform:translateX(960px) translateZ(60px) rotateY(-90deg)}
 .wall.side-l::after{background:linear-gradient(270deg, rgba(0,0,0,.07), rgba(0,0,0,.015) 45%, transparent)}
@@ -54,7 +54,7 @@ body{background:#efefec}
   background:#fff;box-shadow:0 0 22px 7px rgba(255,255,255,.95), 0 0 70px 24px rgba(255,255,255,.7)}
 .boxrefl{position:absolute;left:-120px;top:0;width:240px;height:90px;transform:translateZ(100px) translateY(calc(var(--lift) * 1px));pointer-events:none;
   background:linear-gradient(180deg, rgba(205,204,199,.34), rgba(236,236,232,0) 85%)}
-.door{position:absolute;left:1124px;top:1124px;width:152px;height:152px;pointer-events:auto;cursor:pointer;display:block;outline:none}
+.door{position:absolute;left:1124px;top:2324px;width:152px;height:152px;pointer-events:auto;cursor:pointer;display:block;outline:none}
 .door::before{content:"";position:absolute;inset:-14px;opacity:0;transition:opacity .6s;
   background:radial-gradient(circle at 50% 50%, #fff 0, rgba(255,255,255,.95) 40%, rgba(255,255,255,0) 72%)}
 .door:hover::before,.door:focus-visible::before{opacity:1}
@@ -62,18 +62,20 @@ body{background:#efefec}
   background:radial-gradient(circle at 34% 30%, #ffb3a3 0, #ef6a50 22%, #d4432c 48%, #7e1d10 100%);
   box-shadow:1px 3px 3px rgba(0,0,0,.18)}
 .door:hover .doorpin,.door:focus-visible .doorpin{opacity:1;transform:scale(1.15)}
-/* ---------- la platine (DDJ), debout contre le mur ---------- */
-.ddj{position:absolute;left:0;top:0;transform-style:preserve-3d;transform:translate3d(-335px,0,-452px) rotateX(10deg);cursor:pointer}
+/* ---------- la platine, debout contre le mur ---------- */
+.ddj{position:absolute;left:0;top:0;transform-style:preserve-3d;transform:translate3d(-560px,0,-437px) rotateX(10deg);cursor:pointer}
 .ddj .df{position:absolute;backface-visibility:hidden}
-.ddj .dfront{left:-75px;top:-265px;width:150px;height:265px;transform:translateZ(11px);border-radius:8px;transition:filter .4s}
+.ddj .dfront{left:-80px;top:-280px;width:160px;height:280px;transform:translateZ(15px);border-radius:7px;transition:filter .4s;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
 .ddj .dfront svg{display:block;width:100%;height:100%}
-.ddj:hover .dfront,.ddj:focus-visible .dfront{filter:brightness(1.22)}
-.ddj .dside{left:-11px;top:-265px;width:22px;height:265px;transform:translateX(-75px) rotateY(-90deg);background:linear-gradient(90deg,#121214,#232326);border-radius:4px}
-.ddj .dtop{left:-75px;top:-276px;width:150px;height:22px;transform:translateY(-254px) rotateX(90deg);background:#2a2a2d;border-radius:4px}
-.ddjshadow{position:absolute;left:-420px;top:-40px;width:170px;height:80px;transform:translateZ(-430px) rotateX(90deg);filter:blur(10px);pointer-events:none;
-  background:radial-gradient(closest-side, rgba(0,0,0,.28), rgba(0,0,0,0))}
-.ddjwall{position:absolute;left:-400px;top:-250px;width:130px;height:250px;transform:translateZ(-498px);filter:blur(16px);pointer-events:none;
-  background:linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.14) 40%, rgba(0,0,0,.2))}
+.ddj:hover .dfront,.ddj:focus-visible .dfront{filter:brightness(1.04) contrast(1.05)}
+.ddj .dright{left:65px;top:-280px;width:30px;height:280px;transform:rotateY(90deg);border-radius:3px;
+  background:linear-gradient(90deg,#e6e5e0 0,#d9d8d2 45%,#1a1a1a 45%,#1a1a1a 55%,#cfcec8 55%,#c4c3bd 100%)}
+.ddj .dtop{left:-80px;top:-295px;width:160px;height:30px;transform:rotateX(90deg);border-radius:3px;background:linear-gradient(#dcdbd6,#f3f2ee)}
+.ddjshadow{position:absolute;left:-660px;top:-45px;width:200px;height:90px;transform:translateZ(-428px) rotateX(90deg);filter:blur(10px);pointer-events:none;
+  background:radial-gradient(closest-side, rgba(0,0,0,.26), rgba(0,0,0,0))}
+.ddjwall{position:absolute;left:-640px;top:-270px;width:150px;height:270px;transform:translateZ(-498px);filter:blur(16px);pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.12) 40%, rgba(0,0,0,.18))}
 .fadeout{position:fixed;inset:0;background:#fbfbfa;opacity:0;pointer-events:none;z-index:100;transition:opacity .55s}
 .fadeout.on{opacity:1}
 .vignette{position:fixed;inset:0;pointer-events:none;z-index:1;
@@ -192,51 +194,83 @@ body{background:#efefec}
   <div class="ddjwall"></div>
   <div class="ddjshadow"></div>
   <a class="ddj" id="ddj" href="catalogue.html" aria-label="Catalogue">
-    <div class="df dside"></div>
     <div class="df dtop"></div>
-    <div class="df dfront"><svg class="ddjsvg" viewBox="0 0 272 482" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <div class="df dright"></div>
+    <div class="df dfront"><svg class="ddjsvg" viewBox="0 0 286 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 <defs>
-<linearGradient id="ddjBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2e2e31"/><stop offset=".55" stop-color="#1e1e20"/><stop offset="1" stop-color="#161618"/></linearGradient>
-<radialGradient id="ddjJog" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#2c2c2f"/><stop offset=".65" stop-color="#18181a"/><stop offset="1" stop-color="#0d0d0e"/></radialGradient>
-<linearGradient id="ddjCap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4a4e"/><stop offset="1" stop-color="#252527"/></linearGradient>
-<g id="ddjDeck">
-<circle cx="136" cy="104" r="75" fill="#0b0b0c"/>
-<circle cx="136" cy="104" r="71" fill="url(#ddjJog)" stroke="#3c3c40" stroke-width="2"/>
-<circle cx="136" cy="104" r="60" fill="none" stroke="#232326" stroke-width="1"/>
-<circle cx="136" cy="104" r="50" fill="none" stroke="#202023" stroke-width="1"/>
-<circle cx="136" cy="104" r="40" fill="none" stroke="#1f1f22" stroke-width="1"/>
-<circle cx="136" cy="104" r="23" fill="#2b2b2e" stroke="#47474b" stroke-width="1.2"/>
-<circle cx="136" cy="104" r="3" fill="#5a5a5e"/>
-<rect x="231" y="34" width="6" height="128" rx="3" fill="#0c0c0d"/>
-<rect x="222" y="86" width="24" height="12" rx="2.5" fill="url(#ddjCap)" stroke="#55555a" stroke-width=".8"/>
-<circle cx="35" cy="138" r="11" fill="#151517" stroke="#3a3a3e" stroke-width="1.2"/>
-<circle cx="35" cy="166" r="11" fill="#151517" stroke="#3a3a3e" stroke-width="1.2"/>
-<path d="M32 162 l7 4 -7 4z" fill="#4c4c50"/>
-<rect x="30" y="134" width="10" height="8" rx="1" fill="none" stroke="#4c4c50" stroke-width="1"/>
-<circle cx="35" cy="40" r="7" fill="#1a1a1c" stroke="#3a3a3e"/>
-<circle cx="35" cy="64" r="7" fill="#1a1a1c" stroke="#3a3a3e"/>
-<g fill="#121214" stroke="#333337" stroke-width="1">
-<rect x="68" y="186" width="29" height="14" rx="2.5"/><rect x="102" y="186" width="29" height="14" rx="2.5"/>
-<rect x="141" y="186" width="29" height="14" rx="2.5"/><rect x="175" y="186" width="29" height="14" rx="2.5"/>
-</g>
+<linearGradient id="xBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfbf9"/><stop offset=".6" stop-color="#efeeea"/><stop offset="1" stop-color="#e2e1dc"/></linearGradient>
+<radialGradient id="xRing" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#2a2a2a"/><stop offset=".7" stop-color="#121212"/><stop offset="1" stop-color="#050505"/></radialGradient>
+<radialGradient id="xPlat" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".7" stop-color="#f1f0ec"/><stop offset="1" stop-color="#dcdbd6"/></radialGradient>
+<radialGradient id="xKnob" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#4a4a4a"/><stop offset=".55" stop-color="#1c1c1c"/><stop offset="1" stop-color="#080808"/></radialGradient>
+<linearGradient id="xPad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2b2b"/><stop offset="1" stop-color="#111"/></linearGradient>
+<linearGradient id="xCap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a3a"/><stop offset="1" stop-color="#0d0d0d"/></linearGradient>
+<linearGradient id="xScreen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1d1f22"/><stop offset=".5" stop-color="#0c0d0f"/><stop offset="1" stop-color="#16181b"/></linearGradient>
+<g id="xDeck">
+<circle cx="143" cy="110" r="80" fill="url(#xRing)"/>
+<circle cx="214.0" cy="110.0" r="2.3" fill="#262626"/>
+<circle cx="213.1" cy="121.1" r="2.3" fill="#262626"/>
+<circle cx="210.5" cy="131.9" r="2.3" fill="#262626"/>
+<circle cx="206.3" cy="142.2" r="2.3" fill="#262626"/>
+<circle cx="200.4" cy="151.7" r="2.3" fill="#262626"/>
+<circle cx="193.2" cy="160.2" r="2.3" fill="#262626"/>
+<circle cx="184.7" cy="167.4" r="2.3" fill="#262626"/>
+<circle cx="175.2" cy="173.3" r="2.3" fill="#262626"/>
+<circle cx="164.9" cy="177.5" r="2.3" fill="#262626"/>
+<circle cx="154.1" cy="180.1" r="2.3" fill="#262626"/>
+<circle cx="143.0" cy="181.0" r="2.3" fill="#262626"/>
+<circle cx="131.9" cy="180.1" r="2.3" fill="#262626"/>
+<circle cx="121.1" cy="177.5" r="2.3" fill="#262626"/>
+<circle cx="110.8" cy="173.3" r="2.3" fill="#262626"/>
+<circle cx="101.3" cy="167.4" r="2.3" fill="#262626"/>
+<circle cx="92.8" cy="160.2" r="2.3" fill="#262626"/>
+<circle cx="85.6" cy="151.7" r="2.3" fill="#262626"/>
+<circle cx="79.7" cy="142.2" r="2.3" fill="#262626"/>
+<circle cx="75.5" cy="131.9" r="2.3" fill="#262626"/>
+<circle cx="72.9" cy="121.1" r="2.3" fill="#262626"/>
+<circle cx="72.0" cy="110.0" r="2.3" fill="#262626"/>
+<circle cx="72.9" cy="98.9" r="2.3" fill="#262626"/>
+<circle cx="75.5" cy="88.1" r="2.3" fill="#262626"/>
+<circle cx="79.7" cy="77.8" r="2.3" fill="#262626"/>
+<circle cx="85.6" cy="68.3" r="2.3" fill="#262626"/>
+<circle cx="92.8" cy="59.8" r="2.3" fill="#262626"/>
+<circle cx="101.3" cy="52.6" r="2.3" fill="#262626"/>
+<circle cx="110.8" cy="46.7" r="2.3" fill="#262626"/>
+<circle cx="121.1" cy="42.5" r="2.3" fill="#262626"/>
+<circle cx="131.9" cy="39.9" r="2.3" fill="#262626"/>
+<circle cx="143.0" cy="39.0" r="2.3" fill="#262626"/>
+<circle cx="154.1" cy="39.9" r="2.3" fill="#262626"/>
+<circle cx="164.9" cy="42.5" r="2.3" fill="#262626"/>
+<circle cx="175.2" cy="46.7" r="2.3" fill="#262626"/>
+<circle cx="184.7" cy="52.6" r="2.3" fill="#262626"/>
+<circle cx="193.2" cy="59.8" r="2.3" fill="#262626"/>
+<circle cx="200.4" cy="68.3" r="2.3" fill="#262626"/>
+<circle cx="206.3" cy="77.8" r="2.3" fill="#262626"/>
+<circle cx="210.5" cy="88.1" r="2.3" fill="#262626"/>
+<circle cx="213.1" cy="98.9" r="2.3" fill="#262626"/>
+<circle cx="143" cy="110" r="80" fill="none" stroke="#000" stroke-width="1"/>
+<circle cx="143" cy="110" r="61" fill="url(#xPlat)" stroke="#d7d6d0" stroke-width="1"/>
+<circle cx="143" cy="110" r="27" fill="#151515"/>
+<path d="M164.0 110.0L168.5 110.0M163.8 112.7L166.8 113.1M163.3 115.4L166.2 116.2M162.4 118.0L165.2 119.2M161.2 120.5L165.1 122.8M159.7 122.8L162.0 124.6M157.8 124.8L160.0 127.0M155.8 126.7L157.6 129.0M153.5 128.2L155.8 132.1M151.0 129.4L152.2 132.2M148.4 130.3L149.2 133.2M145.7 130.8L146.1 133.8M143.0 131.0L143.0 135.5M140.3 130.8L139.9 133.8M137.6 130.3L136.8 133.2M135.0 129.4L133.8 132.2M132.5 128.2L130.2 132.1M130.2 126.7L128.4 129.0M128.2 124.8L126.0 127.0M126.3 122.8L124.0 124.6M124.8 120.5L120.9 122.8M123.6 118.0L120.8 119.2M122.7 115.4L119.8 116.2M122.2 112.7L119.2 113.1M122.0 110.0L117.5 110.0M122.2 107.3L119.2 106.9M122.7 104.6L119.8 103.8M123.6 102.0L120.8 100.8M124.8 99.5L120.9 97.2M126.3 97.2L124.0 95.4M128.2 95.2L126.0 93.0M130.2 93.3L128.4 91.0M132.5 91.8L130.2 87.9M135.0 90.6L133.8 87.8M137.6 89.7L136.8 86.8M140.3 89.2L139.9 86.2M143.0 89.0L143.0 84.5M145.7 89.2L146.1 86.2M148.4 89.7L149.2 86.8M151.0 90.6L152.2 87.8M153.5 91.8L155.8 87.9M155.8 93.3L157.6 91.0M157.8 95.2L160.0 93.0M159.7 97.2L162.0 95.4M161.2 99.5L165.1 97.2M162.4 102.0L165.2 100.8M163.3 104.6L166.2 103.8M163.8 107.3L166.8 106.9" stroke="#bdbdbd" stroke-width=".7"/>
+<circle cx="143" cy="110" r="12" fill="#222" stroke="#3a3a3a" stroke-width="1"/>
+<rect x="138" y="105" width="10" height="10" rx="1.5" fill="none" stroke="#8a8a8a" stroke-width="1" transform="rotate(45 143 110)"/>
+<rect x="262" y="38" width="5" height="130" rx="2.5" fill="#111"/>
+<rect x="254" y="92" width="21" height="13" rx="2" fill="url(#xCap)"/><path d="M256 98.5L273 98.5" stroke="#ddd" stroke-width=".8"/>
+<circle cx="28" cy="150" r="12" fill="#111"/><circle cx="28" cy="150" r="9.5" fill="url(#xPlat)"/>
+<circle cx="28" cy="180" r="12" fill="#111"/><circle cx="28" cy="180" r="9.5" fill="url(#xPlat)"/>
+<path d="M25 175l7 5-7 5z" fill="#222"/><rect x="23" y="146" width="10" height="8" rx="1" fill="none" stroke="#222" stroke-width="1.1"/>
+<rect x="17" y="34" width="22" height="11" rx="2" fill="#141414"/><rect x="17" y="56" width="22" height="11" rx="2" fill="#141414"/><rect x="17" y="78" width="22" height="11" rx="2" fill="#141414"/>
+<rect x="76" y="197" width="27" height="15" rx="2.5" fill="url(#xPad)" stroke="#000" stroke-width=".6"/><rect x="109" y="197" width="27" height="15" rx="2.5" fill="url(#xPad)" stroke="#000" stroke-width=".6"/><rect x="142" y="197" width="27" height="15" rx="2.5" fill="url(#xPad)" stroke="#000" stroke-width=".6"/><rect x="175" y="197" width="27" height="15" rx="2.5" fill="url(#xPad)" stroke="#000" stroke-width=".6"/>
 </g>
 </defs>
-<rect x="1" y="1" width="270" height="480" rx="14" fill="url(#ddjBody)" stroke="#3b3b3f" stroke-width="1.5"/>
-<use href="#ddjDeck"/>
-<rect x="14" y="210" width="244" height="62" rx="6" fill="#141416" stroke="#2c2c30" stroke-width="1"/>
-<g fill="#202023" stroke="#48484c" stroke-width="1">
-<circle cx="42" cy="228" r="8"/><circle cx="80" cy="228" r="8"/><circle cx="118" cy="228" r="8"/>
-<circle cx="154" cy="228" r="8"/><circle cx="192" cy="228" r="8"/><circle cx="230" cy="228" r="8"/>
-</g>
-<g stroke="#77777c" stroke-width="1.4" stroke-linecap="round">
-<path d="M42 228 l0 -6"/><path d="M80 228 l3 -5"/><path d="M118 228 l-3 -5"/><path d="M154 228 l0 -6"/><path d="M192 228 l4 -4"/><path d="M230 228 l-2 -6"/>
-</g>
-<rect x="30" y="252" width="86" height="5" rx="2.5" fill="#0b0b0c"/>
-<rect x="156" y="252" width="86" height="5" rx="2.5" fill="#0b0b0c"/>
-<rect x="88" y="246" width="12" height="17" rx="2" fill="url(#ddjCap)" stroke="#55555a" stroke-width=".8"/>
-<rect x="174" y="246" width="12" height="17" rx="2" fill="url(#ddjCap)" stroke="#55555a" stroke-width=".8"/>
-<use href="#ddjDeck" y="276"/>
-<text x="136" y="474" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="7" letter-spacing="2.2" fill="#55555a">SERVICE PUBLIQUE</text>
+<rect x="1" y="1" width="284" height="498" rx="12" fill="url(#xBody)" stroke="#cfcec8" stroke-width="1.2"/>
+<path d="M8 222L278 222M8 280L278 280" stroke="#d3d2cc" stroke-width="1"/>
+<use href="#xDeck"/>
+<rect x="16" y="229" width="70" height="44" rx="3" fill="url(#xScreen)" stroke="#000" stroke-width=".8"/>
+<path d="M20 233L52 233L30 269L20 269Z" fill="rgba(255,255,255,.05)"/>
+<circle cx="104" cy="240.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="104" cy="239" r="7.5" fill="url(#xKnob)"/><path d="M104 239L99.9 234.1" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="126" cy="240.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="126" cy="239" r="7.5" fill="url(#xKnob)"/><path d="M126 239L128.2 233.0" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="148" cy="240.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="148" cy="239" r="7.5" fill="url(#xKnob)"/><path d="M148 239L146.9 232.7" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="170" cy="240.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="170" cy="239" r="7.5" fill="url(#xKnob)"/><path d="M170 239L173.7 233.8" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="192" cy="240.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="192" cy="239" r="7.5" fill="url(#xKnob)"/><path d="M192 239L186.5 235.8" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="214" cy="240.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="214" cy="239" r="7.5" fill="url(#xKnob)"/><path d="M214 239L214.0 232.6" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="250" cy="252.2" r="9" fill="rgba(0,0,0,.25)"/><circle cx="250" cy="251" r="9" fill="url(#xKnob)"/><path d="M250 251L246.2 244.4" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/>
+<circle cx="104" cy="263.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="104" cy="262" r="7.5" fill="url(#xKnob)"/><path d="M104 262L105.1 255.7" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="126" cy="263.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="126" cy="262" r="7.5" fill="url(#xKnob)"/><path d="M126 262L123.8 256.0" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="148" cy="263.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="148" cy="262" r="7.5" fill="url(#xKnob)"/><path d="M148 262L143.9 257.1" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="170" cy="263.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="170" cy="262" r="7.5" fill="url(#xKnob)"/><path d="M170 262L174.1 257.1" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="192" cy="263.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="192" cy="262" r="7.5" fill="url(#xKnob)"/><path d="M192 262L188.3 256.8" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/><circle cx="214" cy="263.2" r="7.5" fill="rgba(0,0,0,.25)"/><circle cx="214" cy="262" r="7.5" fill="url(#xKnob)"/><path d="M214 262L215.6 255.8" stroke="#f2f2f2" stroke-width="1.3" stroke-linecap="round"/>
+<use href="#xDeck" y="282"/>
+<text x="143" y="15" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="6.5" letter-spacing="2" fill="#8d8c87">SERVICE PUBLIQUE</text>
 </svg></div>
   </a>
 
@@ -293,16 +327,16 @@ body{background:#efefec}
 
   /* ---------- mise à l'échelle ---------- */
   function fit(){
-    const s = Math.min(1, (innerWidth - 16) / 790, innerHeight / 640);
+    const s = Math.min(1, (innerWidth - 16) / 940, innerHeight / 640);
     document.documentElement.style.setProperty('--s', s.toFixed(3));
-    document.getElementById('stage').style.marginLeft = (-14 * s).toFixed(1) + 'px';
+    document.getElementById('stage').style.marginLeft = innerWidth < 1000 ? (78 * s).toFixed(1) + 'px' : '0px';
   }
   fit(); addEventListener('resize', fit);
 
   /* ---------- murs de lumière ---------- */
   const glows = [];
   (() => {
-    const wall = $('backwall'), COLS = 12, ROWS = 10, H = 1600, frag = document.createDocumentFragment();
+    const wall = $('backwall'), COLS = 12, ROWS = 10, H = 2800, frag = document.createDocumentFragment();
     for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
       const g = document.createElement('div');
       g.className = 'glow';
